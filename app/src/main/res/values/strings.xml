@@ -26,4 +26,16 @@
     <string name="otp_expired_message">OTP expired. Please resend code.</string>
     <string name="otp_verified_message">Account verified successfully</string>
     <string name="user_not_found_message">User not found</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_tasks">Tasks</string>
+    <string name="nav_schedule">Schedule</string>
+    <string name="nav_analytics">Analytics</string>
+    <string name="dashboard_title">Good Morning</string>
+    <string name="today_plan">Today’s Study Plan</string>
+    <string name="weekly_progress">Weekly Progress</string>
+    <string name="my_tasks">My Tasks</string>
+    <string name="sorted_by_priority">Sorted by Priority</string>
+    <string name="add_task">Add Task</string>
+    <string name="no_tasks">No tasks available</string>
+    <string name="email_button">Email</string>
 </resources>

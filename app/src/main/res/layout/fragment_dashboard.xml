@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#EAF4FF">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="24dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/greetingTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dashboard_title"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:textColor="#0B5FA5" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="24dp">
+
+            <TextView
+                android:id="@+id/overdueCountTextView"
+                android:layout_width="0dp"
+                android:layout_height="90dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="0\nOverdue"
+                android:background="#F7B6C2" />
+
+            <TextView
+                android:id="@+id/dueTodayCountTextView"
+                android:layout_width="0dp"
+                android:layout_height="90dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="0\nDue Today"
+                android:layout_marginStart="10dp"
+                android:background="#FFD7B5" />
+
+            <TextView
+                android:id="@+id/weekCountTextView"
+                android:layout_width="0dp"
+                android:layout_height="90dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="0\nThis Week"
+                android:layout_marginStart="10dp"
+                android:background="#BDE7FF" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/today_plan"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#0B5FA5"
+            android:layout_marginTop="28dp" />
+
+        <TextView
+            android:id="@+id/todayPlanTextView"
+            android:layout_width="match_parent"
+            android:layout_height="140dp"
+            android:padding="16dp"
+            android:text="@string/no_tasks"
+            android:background="#A9CBE8"
+            android:layout_marginTop="8dp" />
+
+        <Button
+            android:id="@+id/addTaskButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/add_task"
+            android:layout_marginTop="24dp" />
+
+    </LinearLayout>
+</ScrollView>
