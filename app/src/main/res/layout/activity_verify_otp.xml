@@ -2,12 +2,57 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:gravity="center"
-    android:orientation="vertical">
+    android:padding="28dp"
+    android:background="#EAF4FF">
 
     <TextView
+        android:id="@+id/otpTitleTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Verify OTP" />
+        android:text="@string/verify_otp_title"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:textColor="#0B5FA5" />
+
+    <TextView
+        android:id="@+id/otpInfoTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/otp_info"
+        android:gravity="center"
+        android:layout_marginTop="20dp" />
+
+    <TextView
+        android:id="@+id/demoOtpTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp" />
+
+    <EditText
+        android:id="@+id/otpEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/otp_hint"
+        android:inputType="number"
+        android:maxLength="6"
+        android:layout_marginTop="20dp" />
+
+    <Button
+        android:id="@+id/verifyOtpButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/verify_button"
+        android:layout_marginTop="20dp" />
+
+    <Button
+        android:id="@+id/resendOtpButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/resend_otp_button"
+        android:layout_marginTop="10dp" />
 
 </LinearLayout>

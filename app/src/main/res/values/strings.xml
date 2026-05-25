@@ -16,4 +16,14 @@
     <string name="register_success_message">Account created. Please verify your email</string>
     <string name="invalid_login_message">Invalid email or password</string>
     <string name="verify_first_message">Please verify your account first</string>
+    <string name="verify_otp_title">Verify OTP</string>
+    <string name="otp_info">Enter the 6-digit verification code. This code expires in 10 minutes.</string>
+    <string name="otp_hint">Enter OTP code</string>
+    <string name="verify_button">Verify</string>
+    <string name="resend_otp_button">Resend Code</string>
+    <string name="otp_sent_message">OTP code generated</string>
+    <string name="otp_invalid_message">Invalid OTP code</string>
+    <string name="otp_expired_message">OTP expired. Please resend code.</string>
+    <string name="otp_verified_message">Account verified successfully</string>
+    <string name="user_not_found_message">User not found</string>
 </resources>
