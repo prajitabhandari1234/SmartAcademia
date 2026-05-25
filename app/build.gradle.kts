@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.google.android.libraries.mapsplatform.secrets.gradle.plugin)
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
@@ -36,6 +37,9 @@ android {
     }
     buildFeatures {
         viewBinding = true
+    }
+    kotlinOptions {
+        jvmTarget = "11"
     }
 }
 
@@ -80,5 +84,5 @@ dependencies {
     implementation("androidx.navigation:navigation-ui-ktx:2.8.0")
 
 // MPAndroidChart
-    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+    // implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 }

@@ -1,5 +1,5 @@
 package au.edu.cqu.smartacademia.activities
-
+/*
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 
@@ -45,4 +45,4 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
     }
-}
+}*/

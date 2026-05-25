@@ -10,6 +10,7 @@ activity = "1.13.0"
 constraintlayout = "2.2.1"
 googleAndroidLibrariesMapsplatformSecretsGradlePlugin = "2.0.1"
 playServicesMaps = "20.0.0"
+kotlin = "2.2.20"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -25,4 +26,5 @@ play-services-maps = { group = "com.google.android.gms", name = "play-services-m
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 google-android-libraries-mapsplatform-secrets-gradle-plugin = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "googleAndroidLibrariesMapsplatformSecretsGradlePlugin" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 
