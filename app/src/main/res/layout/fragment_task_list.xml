@@ -20,6 +20,13 @@
         android:text="@string/sorted_by_priority"
         android:layout_marginBottom="12dp" />
 
+    <Button
+        android:id="@+id/addTaskButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/add_task"
+        android:layout_marginBottom="12dp" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/taskRecyclerView"
         android:layout_width="match_parent"

@@ -37,6 +37,7 @@
             android:label="@string/title_activity_maps" />
 
         <activity android:name=".MainActivity" android:exported="false" />
+        <activity android:name=".activities.AddTaskActivity" android:exported="false" />
 
     </application>
 

@@ -38,4 +38,15 @@
     <string name="add_task">Add Task</string>
     <string name="no_tasks">No tasks available</string>
     <string name="email_button">Email</string>
+    <string name="add_task_title">Add New Task</string>
+    <string name="task_title_hint">Task name</string>
+    <string name="course_hint">Course code</string>
+    <string name="deadline_hint">Deadline e.g. 2026-06-05 23:45</string>
+    <string name="weight_hint">Grade weight %</string>
+    <string name="hours_hint">Estimated hours</string>
+    <string name="notes_hint">Notes</string>
+    <string name="latitude_hint">Latitude optional</string>
+    <string name="longitude_hint">Longitude optional</string>
+    <string name="save_task_button">Save Task</string>
+    <string name="task_saved_message">Task saved successfully</string>
 </resources>

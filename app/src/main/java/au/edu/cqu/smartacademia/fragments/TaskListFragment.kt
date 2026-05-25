@@ -1,14 +1,17 @@
 package au.edu.cqu.smartacademia.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import au.edu.cqu.smartacademia.R
+import au.edu.cqu.smartacademia.activities.AddTaskActivity
 import au.edu.cqu.smartacademia.adapter.TaskAdapter
 import au.edu.cqu.smartacademia.viewmodel.TaskViewModel
 
@@ -42,6 +45,10 @@ class TaskListFragment : Fragment() {
 
         taskViewModel.getTasksForUser(userEmail).observe(viewLifecycleOwner) { tasks ->
             taskAdapter.updateTasks(tasks)
+        }
+        val addTaskButton = view.findViewById<Button>(R.id.addTaskButton)
+        addTaskButton.setOnClickListener {
+            startActivity(Intent(requireContext(), AddTaskActivity::class.java))
         }
 
         return view

@@ -1,6 +1,7 @@
 package au.edu.cqu.smartacademia.fragments
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import au.edu.cqu.smartacademia.R
+import au.edu.cqu.smartacademia.activities.AddTaskActivity
 import au.edu.cqu.smartacademia.viewmodel.TaskViewModel
 
 class DashboardFragment : Fragment() {
@@ -47,9 +49,7 @@ class DashboardFragment : Fragment() {
         }
 
         addTaskButton.setOnClickListener {
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainer, TaskListFragment())
-                .commit()
+            startActivity(Intent(requireContext(), AddTaskActivity::class.java))
         }
 
         return view
