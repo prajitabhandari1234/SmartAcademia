@@ -2,8 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.google.android.libraries.mapsplatform.secrets.gradle.plugin)
     alias(libs.plugins.kotlin.android)
+    id("org.jetbrains.kotlin.kapt")
 }
-
 android {
     namespace = "au.edu.cqu.smartacademia"
     compileSdk {
@@ -55,8 +55,9 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     // Room
-    implementation("androidx.room:room-runtime:2.6.1")
-    implementation("androidx.room:room-ktx:2.6.1")
+    implementation("androidx.room:room-runtime:2.8.4")
+    implementation("androidx.room:room-ktx:2.8.4")
+    kapt("androidx.room:room-compiler:2.8.4")
 
 // Lifecycle
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.2")

@@ -1,4 +1,19 @@
 <resources>
     <string name="app_name">SmartAcademia</string>
     <string name="title_activity_maps">MapsActivity</string>
+    <string name="login_title">Login</string>
+    <string name="register_title">Create new Account</string>
+    <string name="email_hint">Enter your email address</string>
+    <string name="password_hint">Enter your password</string>
+    <string name="full_name_hint">Enter your full name</string>
+    <string name="institution_hint">Enter your institution</string>
+    <string name="timezone_hint">Enter your timezone</string>
+    <string name="login_button">Log in</string>
+    <string name="signup_button">Sign Up</string>
+    <string name="create_account_button">Create account</string>
+    <string name="empty_fields_message">Please fill all required fields</string>
+    <string name="email_exists_message">This email is already registered</string>
+    <string name="register_success_message">Account created. Please verify your email</string>
+    <string name="invalid_login_message">Invalid email or password</string>
+    <string name="verify_first_message">Please verify your account first</string>
 </resources>
