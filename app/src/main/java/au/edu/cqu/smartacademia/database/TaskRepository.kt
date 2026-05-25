@@ -17,10 +17,14 @@ class TaskRepository(private val taskDao: TaskDao) {
     }
 
     suspend fun insertTask(task: Task) {
+        task.priorityScore = au.edu.cqu.smartacademia.utils.ScheduleGenerator.calculatePriorityScore(task)
         taskDao.insertTask(task)
     }
 
     suspend fun insertTasks(tasks: List<Task>) {
+        tasks.forEach {
+            it.priorityScore = au.edu.cqu.smartacademia.utils.ScheduleGenerator.calculatePriorityScore(it)
+        }
         taskDao.insertTasks(tasks)
     }
 

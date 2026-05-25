@@ -44,7 +44,10 @@ class TaskListFragment : Fragment() {
         taskViewModel.loadSeedData(userEmail)
 
         taskViewModel.getTasksForUser(userEmail).observe(viewLifecycleOwner) { tasks ->
-            taskAdapter.updateTasks(tasks)
+            val sortedTasks = tasks.sortedByDescending {
+                au.edu.cqu.smartacademia.utils.ScheduleGenerator.calculatePriorityScore(it)
+            }
+            taskAdapter.updateTasks(sortedTasks)
         }
         val addTaskButton = view.findViewById<Button>(R.id.addTaskButton)
         addTaskButton.setOnClickListener {

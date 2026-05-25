@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import au.edu.cqu.smartacademia.R
 import au.edu.cqu.smartacademia.activities.AddTaskActivity
+import au.edu.cqu.smartacademia.utils.ScheduleGenerator
 import au.edu.cqu.smartacademia.viewmodel.TaskViewModel
 
 class DashboardFragment : Fragment() {
@@ -26,6 +27,9 @@ class DashboardFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_dashboard, container, false)
 
+        val overdueCountTextView = view.findViewById<TextView>(R.id.overdueCountTextView)
+        val dueTodayCountTextView = view.findViewById<TextView>(R.id.dueTodayCountTextView)
+        val weekCountTextView = view.findViewById<TextView>(R.id.weekCountTextView)
         val todayPlanTextView = view.findViewById<TextView>(R.id.todayPlanTextView)
         val addTaskButton = view.findViewById<Button>(R.id.addTaskButton)
 
@@ -38,14 +42,13 @@ class DashboardFragment : Fragment() {
         taskViewModel.loadSeedData(userEmail)
 
         taskViewModel.getTasksForUser(userEmail).observe(viewLifecycleOwner) { tasks ->
-            if (tasks.isEmpty()) {
-                todayPlanTextView.text = getString(R.string.no_tasks)
-            } else {
-                val topTasks = tasks.take(3).joinToString("\n") {
-                    "${it.title} - ${it.course}"
-                }
-                todayPlanTextView.text = topTasks
+            overdueCountTextView.text = "${ScheduleGenerator.countOverdue(tasks)}\nOverdue"
+            dueTodayCountTextView.text = "${ScheduleGenerator.countDueToday(tasks)}\nDue Today"
+            weekCountTextView.text = "${ScheduleGenerator.countThisWeek(tasks)}\nThis Week"
+            val sortedTasks = tasks.sortedByDescending {
+                ScheduleGenerator.calculatePriorityScore(it)
             }
+            todayPlanTextView.text = ScheduleGenerator.generateTodayPlan(sortedTasks)
         }
 
         addTaskButton.setOnClickListener {

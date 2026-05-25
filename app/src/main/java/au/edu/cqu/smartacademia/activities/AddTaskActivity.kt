@@ -54,9 +54,7 @@ class AddTaskActivity : AppCompatActivity() {
             val lat = latEditText.text.toString().toDoubleOrNull() ?: -33.8688
             val lon = lonEditText.text.toString().toDoubleOrNull() ?: 151.2093
 
-            val priorityScore = calculatePriority(weight, hours)
-
-            val task = Task(
+            val tempTask = Task(
                 userEmail = userEmail,
                 title = title,
                 course = course,
@@ -64,19 +62,19 @@ class AddTaskActivity : AppCompatActivity() {
                 weight = weight,
                 estimatedHours = hours,
                 notes = notes,
-                priorityScore = priorityScore,
                 lat = lat,
                 lon = lon
             )
+
+            val priorityScore = au.edu.cqu.smartacademia.utils.ScheduleGenerator.calculatePriorityScore(tempTask)
+
+            val task = tempTask
+            task.priorityScore = priorityScore
 
             taskViewModel.insertTask(task)
 
             Toast.makeText(this, getString(R.string.task_saved_message), Toast.LENGTH_SHORT).show()
             finish()
         }
-    }
-
-    private fun calculatePriority(weight: Int, hours: Int): Int {
-        return weight + hours * 5
     }
 }
