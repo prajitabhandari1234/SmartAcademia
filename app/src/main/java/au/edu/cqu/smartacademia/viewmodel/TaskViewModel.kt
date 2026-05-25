@@ -47,4 +47,16 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
             repository.loadSeedDataIfEmpty(userEmail)
         }
     }
+
+    fun getTaskById(taskId: String, result: (Task?) -> Unit) {
+        viewModelScope.launch {
+            result(repository.getTaskById(taskId))
+        }
+    }
+
+    fun deleteTaskById(taskId: String) {
+        viewModelScope.launch {
+            repository.deleteTaskById(taskId)
+        }
+    }
 }

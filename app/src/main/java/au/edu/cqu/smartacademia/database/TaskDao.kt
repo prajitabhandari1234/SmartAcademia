@@ -28,4 +28,10 @@ interface TaskDao {
 
     @Query("SELECT * FROM tasks WHERE userEmail = :email AND completed = 0")
     fun getActiveTasks(email: String): LiveData<List<Task>>
+
+    @Query("SELECT * FROM tasks WHERE id = :taskId LIMIT 1")
+    suspend fun getTaskById(taskId: String): Task?
+
+    @Query("DELETE FROM tasks WHERE id = :taskId")
+    suspend fun deleteTaskById(taskId: String)
 }

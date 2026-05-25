@@ -27,6 +27,12 @@
         android:text="@string/add_task"
         android:layout_marginBottom="12dp" />
 
+    <Spinner
+        android:id="@+id/sortSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/taskRecyclerView"
         android:layout_width="match_parent"

@@ -49,4 +49,13 @@
     <string name="longitude_hint">Longitude optional</string>
     <string name="save_task_button">Save Task</string>
     <string name="task_saved_message">Task saved successfully</string>
+    <string name="delete_task">Delete Task</string>
+    <string name="task_deleted_message">Task deleted successfully</string>
+    <string name="task_updated_message">Task updated successfully</string>
+    <string name="edit_task_title">Edit Task</string>
+    <string name="sort_by">Sort by</string>
+    <string name="edit_button">Edit</string>
+    <string name="delete_button">Delete</string>
+    <string name="cancel_button">Cancel</string>
+    <string name="save_changes_button">Save Changes</string>
 </resources>

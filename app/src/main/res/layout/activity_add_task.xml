@@ -85,5 +85,20 @@
             android:text="@string/save_task_button"
             android:layout_marginTop="22dp" />
 
+        <Button
+            android:id="@+id/deleteTaskButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/delete_task"
+            android:layout_marginTop="10dp" />
+
+        <Button
+            android:id="@+id/cancelButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/cancel_button"
+            android:layout_marginTop="10dp"
+            android:backgroundTint="#9E9E9E"/>
+
     </LinearLayout>
 </ScrollView>

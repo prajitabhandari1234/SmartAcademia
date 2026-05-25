@@ -32,6 +32,14 @@ class TaskRepository(private val taskDao: TaskDao) {
         taskDao.updateTask(task)
     }
 
+    suspend fun getTaskById(taskId: String): Task? {
+        return taskDao.getTaskById(taskId)
+    }
+
+    suspend fun deleteTaskById(taskId: String) {
+        taskDao.deleteTaskById(taskId)
+    }
+
     suspend fun loadSeedDataIfEmpty(userEmail: String) {
         if (taskDao.getTaskCount() == 0) {
             val seedTasks = listOf(
