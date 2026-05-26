@@ -58,4 +58,21 @@
     <string name="delete_button">Delete</string>
     <string name="cancel_button">Cancel</string>
     <string name="save_changes_button">Save Changes</string>
+    <string name="email_subject">SmartAcademia Task Reminder: %1$s</string>
+    <string name="email_body">Hi,
+
+I want to share this academic task with you:
+
+Task: %1$s
+Course: %2$s
+Deadline: %3$s
+Weight: %4$d%%
+Estimated Hours: %5$d
+Notes: %6$s
+
+Sent from SmartAcademia.</string>
+
+    <string name="email_chooser_title">Send task using:</string>
+    <string name="email_missing_message">Email cannot open because required task details are missing</string>
+    <string name="no_email_app_message">No email app found</string>
 </resources>
