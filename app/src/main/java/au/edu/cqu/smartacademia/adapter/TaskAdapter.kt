@@ -26,6 +26,7 @@ class TaskAdapter(
         val editTaskButton: Button = itemView.findViewById(R.id.editTaskButton)
         val deleteTaskButton: Button = itemView.findViewById(R.id.deleteTaskButton)
         val emailTaskButton: Button = itemView.findViewById(R.id.emailTaskButton)
+        val mapTaskButton: Button = itemView.findViewById(R.id.mapTaskButton)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskHolder {
@@ -68,6 +69,12 @@ class TaskAdapter(
 
         holder.emailTaskButton.setOnClickListener {
             sendTaskEmail(holder.itemView, task)
+        }
+
+        holder.mapTaskButton.setOnClickListener {
+            val intent = Intent(holder.itemView.context, au.edu.cqu.smartacademia.activities.MapsActivity::class.java)
+            intent.putExtra("task", task)
+            holder.itemView.context.startActivity(intent)
         }
     }
 

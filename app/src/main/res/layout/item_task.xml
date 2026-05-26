@@ -53,6 +53,14 @@
             android:layout_weight="1"
             android:text="@string/email_button"
             android:layout_marginStart="6dp" />
+
+        <Button
+            android:id="@+id/mapTaskButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Map"
+            android:layout_marginStart="6dp" />
     </LinearLayout>
 
 </LinearLayout>
