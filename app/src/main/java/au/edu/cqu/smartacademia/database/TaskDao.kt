@@ -34,4 +34,8 @@ interface TaskDao {
 
     @Query("DELETE FROM tasks WHERE id = :taskId")
     suspend fun deleteTaskById(taskId: String)
+
+    @Query("SELECT * FROM tasks WHERE title = :title AND userEmail = :email LIMIT 1")
+    suspend fun getTaskByTitle(title: String, email: String): Task?
+
 }

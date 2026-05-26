@@ -93,22 +93,29 @@ class TaskRepository(private val taskDao: TaskDao) {
                 val apiTasks = response.body() ?: emptyList()
 
                 apiTasks.forEach { apiTask ->
-                    val task = Task(
-                        userEmail = userEmail,
-                        title = apiTask.title,
-                        course = apiTask.course,
-                        deadline = apiTask.deadline,
-                        weight = apiTask.weight,
-                        estimatedHours = apiTask.estimatedHours,
-                        notes = apiTask.notes,
-                        lat = apiTask.lat,
-                        lon = apiTask.lon
-                    )
 
-                    task.priorityScore =
-                        au.edu.cqu.smartacademia.utils.ScheduleGenerator.calculatePriorityScore(task)
+                    val existingTask =
+                        taskDao.getTaskByTitle(apiTask.title, userEmail)
 
-                    taskDao.insertTask(task)
+                    if (existingTask == null) {
+
+                        val task = Task(
+                            userEmail = userEmail,
+                            title = apiTask.title,
+                            course = apiTask.course,
+                            deadline = apiTask.deadline,
+                            weight = apiTask.weight,
+                            estimatedHours = apiTask.estimatedHours,
+                            notes = apiTask.notes,
+                            lat = apiTask.lat,
+                            lon = apiTask.lon
+                        )
+
+                        task.priorityScore =
+                            au.edu.cqu.smartacademia.utils.ScheduleGenerator.calculatePriorityScore(task)
+
+                        taskDao.insertTask(task)
+                    }
                 }
             }
         } catch (e: Exception) {
