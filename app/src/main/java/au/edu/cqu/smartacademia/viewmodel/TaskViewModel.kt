@@ -59,4 +59,9 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
             repository.deleteTaskById(taskId)
         }
     }
+    fun fetchTasksFromApi(userEmail: String) {
+        viewModelScope.launch {
+            repository.fetchTasksFromApi(userEmail)
+        }
+    }
 }

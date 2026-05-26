@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -42,7 +43,9 @@ class TaskListFragment : Fragment() {
         taskViewModel = ViewModelProvider(this)[TaskViewModel::class.java]
 
         val addTaskButton = view.findViewById<Button>(R.id.addTaskButton)
+        val fetchTasksButton = view.findViewById<Button>(R.id.fetchTasksButton)
         val taskRecyclerView = view.findViewById<RecyclerView>(R.id.taskRecyclerView)
+
         sortSpinner = view.findViewById(R.id.sortSpinner)
 
         setupSortSpinner()
@@ -56,6 +59,11 @@ class TaskListFragment : Fragment() {
 
         addTaskButton.setOnClickListener {
             startActivity(Intent(requireContext(), AddTaskActivity::class.java))
+        }
+
+        fetchTasksButton.setOnClickListener {
+            taskViewModel.fetchTasksFromApi(userEmail)
+            Toast.makeText(requireContext(), "Fetching remote tasks...", Toast.LENGTH_SHORT).show()
         }
 
         taskViewModel.loadSeedData(userEmail)

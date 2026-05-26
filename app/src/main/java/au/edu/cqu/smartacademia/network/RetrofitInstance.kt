@@ -5,7 +5,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitInstance {
 
-    private const val BASE_URL = "https://raw.githubusercontent.com/prajitabhandari1234/SmartAcademiaData/refs/heads/main/tasks.json"
+    private const val BASE_URL =
+        "https://raw.githubusercontent.com/prajitabhandari1234/SmartAcademiaData/main/"
 
     val api: ApiService by lazy {
         Retrofit.Builder()

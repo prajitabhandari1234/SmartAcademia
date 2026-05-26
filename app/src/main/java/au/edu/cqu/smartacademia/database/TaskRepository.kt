@@ -1,6 +1,7 @@
 package au.edu.cqu.smartacademia.database
 
 import androidx.lifecycle.LiveData
+import au.edu.cqu.smartacademia.network.RetrofitInstance
 
 class TaskRepository(private val taskDao: TaskDao) {
 
@@ -82,6 +83,36 @@ class TaskRepository(private val taskDao: TaskDao) {
             )
 
             taskDao.insertTasks(seedTasks)
+        }
+    }
+    suspend fun fetchTasksFromApi(userEmail: String) {
+        try {
+            val response = RetrofitInstance.api.getTasks()
+
+            if (response.isSuccessful) {
+                val apiTasks = response.body() ?: emptyList()
+
+                apiTasks.forEach { apiTask ->
+                    val task = Task(
+                        userEmail = userEmail,
+                        title = apiTask.title,
+                        course = apiTask.course,
+                        deadline = apiTask.deadline,
+                        weight = apiTask.weight,
+                        estimatedHours = apiTask.estimatedHours,
+                        notes = apiTask.notes,
+                        lat = apiTask.lat,
+                        lon = apiTask.lon
+                    )
+
+                    task.priorityScore =
+                        au.edu.cqu.smartacademia.utils.ScheduleGenerator.calculatePriorityScore(task)
+
+                    taskDao.insertTask(task)
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 }
