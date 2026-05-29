@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#EAF4FF"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Regenerate Plan"
+            android:textColor="#0B5FA5"
+            android:textSize="28sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/planNameEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Plan name e.g. Exam Preparation Day"
+            android:layout_marginTop="20dp" />
+
+        <EditText
+            android:id="@+id/studyHoursEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Available study hours e.g. 4"
+            android:inputType="number"
+            android:layout_marginTop="12dp" />
+
+        <EditText
+            android:id="@+id/startTimeEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Start time e.g. 9:00 AM"
+            android:layout_marginTop="12dp" />
+
+        <EditText
+            android:id="@+id/extraActivityEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="External activity e.g. Work, Zoom lecture"
+            android:layout_marginTop="12dp" />
+
+        <EditText
+            android:id="@+id/locationNameEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Location name e.g. CQU Sydney Library"
+            android:layout_marginTop="12dp" />
+
+        <EditText
+            android:id="@+id/latitudeEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Latitude e.g. -33.8688"
+            android:inputType="numberDecimal|numberSigned"
+            android:layout_marginTop="12dp" />
+
+        <EditText
+            android:id="@+id/longitudeEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Longitude e.g. 151.2093"
+            android:inputType="numberDecimal|numberSigned"
+            android:layout_marginTop="12dp" />
+
+        <Button
+            android:id="@+id/generateButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Save / Generate Plan"
+            android:layout_marginTop="20dp" />
+
+        <Button
+            android:id="@+id/deletePlanButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Delete Plan"
+            android:layout_marginTop="12dp" />
+
+        <TextView
+            android:id="@+id/generatedPlanTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#A9CBE8"
+            android:padding="16dp"
+            android:text="Your generated plan will appear here."
+            android:textSize="16sp"
+            android:layout_marginTop="20dp" />
+
+        <Button
+            android:id="@+id/backButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Back to Schedule"
+            android:layout_marginTop="20dp" />
+
+    </LinearLayout>
+</ScrollView>

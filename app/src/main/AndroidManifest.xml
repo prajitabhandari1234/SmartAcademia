@@ -39,6 +39,9 @@
 
         <activity android:name=".MainActivity" android:exported="false" />
         <activity android:name=".activities.AddTaskActivity" android:exported="false" />
+        <activity
+            android:name=".activities.RegenerateScheduleActivity"
+            android:exported="false" />
 
     </application>
 

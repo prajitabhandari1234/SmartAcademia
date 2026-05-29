@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#EAF4FF"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Smart Schedule"
+            android:textColor="#0B5FA5"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/dateTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#0B5FA5"
+            android:textSize="16sp"
+            android:layout_marginTop="8dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:orientation="horizontal"
+            android:layout_marginTop="14dp">
+
+            <Button
+                android:id="@+id/dayButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Day" />
+
+            <Button
+                android:id="@+id/weekButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Week" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/previousWeekButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="← Previous Week"
+            android:layout_marginTop="12dp" />
+
+        <TextView
+            android:id="@+id/weekRangeTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#0B5FA5"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginTop="8dp" />
+
+        <Button
+            android:id="@+id/nextWeekButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Next Week →"
+            android:layout_marginTop="8dp" />
+
+        <LinearLayout
+            android:id="@+id/weekDaysLayout"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:background="#FFFFFF"
+            android:layout_marginTop="14dp">
+
+            <TextView
+                android:id="@+id/sunTextView"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="SUN"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/monTextView"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="MON"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tueTextView"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="TUE"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/wedTextView"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="WED"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/thuTextView"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="THU"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/friTextView"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="FRI"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/satTextView"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="SAT"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/timelineLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="12dp" />
+
+        <Button
+            android:id="@+id/regenerateButton"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="Regenerate Today's Plan"
+            android:textSize="16sp"
+            android:layout_marginTop="18dp" />
+
+    </LinearLayout>
+</ScrollView>
