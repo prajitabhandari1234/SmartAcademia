@@ -1,34 +1,38 @@
 package au.edu.cqu.smartacademia.fragments
 
-import android.Manifest
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
-import androidx.core.app.ActivityCompat
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import au.edu.cqu.smartacademia.R
-import au.edu.cqu.smartacademia.activities.AddTaskActivity
+import au.edu.cqu.smartacademia.activities.LoginActivity
 import au.edu.cqu.smartacademia.database.Task
-import au.edu.cqu.smartacademia.utils.NotificationHelper
 import au.edu.cqu.smartacademia.utils.ScheduleGenerator
 import au.edu.cqu.smartacademia.viewmodel.TaskViewModel
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 class DashboardFragment : Fragment() {
 
     private lateinit var taskViewModel: TaskViewModel
     private var userEmail: String = ""
-    private var currentTasks: List<Task> = emptyList()
 
-    private val notificationPermissionRequestCode = 2001
+    private lateinit var greetingTextView: TextView
+    private lateinit var dateTimeTextView: TextView
+    private lateinit var overdueCardTextView: TextView
+    private lateinit var dueTodayCardTextView: TextView
+    private lateinit var thisWeekCardTextView: TextView
+    private lateinit var completedCardTextView: TextView
+    private lateinit var studyPlanTextView: TextView
+    private lateinit var upcomingDeadlinesTextView: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,105 +41,130 @@ class DashboardFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_dashboard, container, false)
 
-        val overdueCountTextView = view.findViewById<TextView>(R.id.overdueCountTextView)
-        val dueTodayCountTextView = view.findViewById<TextView>(R.id.dueTodayCountTextView)
-        val weekCountTextView = view.findViewById<TextView>(R.id.weekCountTextView)
-        val todayPlanTextView = view.findViewById<TextView>(R.id.todayPlanTextView)
-        val addTaskButton = view.findViewById<Button>(R.id.addTaskButton)
-        val checkRemindersButton = view.findViewById<Button>(R.id.checkRemindersButton)
+        greetingTextView = view.findViewById(R.id.greetingTextView)
+        dateTimeTextView = view.findViewById(R.id.dateTimeTextView)
+        overdueCardTextView = view.findViewById(R.id.overdueCardTextView)
+        dueTodayCardTextView = view.findViewById(R.id.dueTodayCardTextView)
+        thisWeekCardTextView = view.findViewById(R.id.thisWeekCardTextView)
+        completedCardTextView = view.findViewById(R.id.completedCardTextView)
+        studyPlanTextView = view.findViewById(R.id.studyPlanTextView)
+        upcomingDeadlinesTextView = view.findViewById(R.id.upcomingDeadlinesTextView)
 
-        NotificationHelper.createNotificationChannel(requireContext())
-        requestNotificationPermissionIfNeeded()
+        val logoutButton = view.findViewById<Button>(R.id.logoutButton)
 
         val sharedPreferences = requireActivity()
             .getSharedPreferences("smartacademia_session", Context.MODE_PRIVATE)
 
         userEmail = sharedPreferences.getString("email", "") ?: ""
 
+        updateGreetingAndDate()
+
         taskViewModel = ViewModelProvider(this)[TaskViewModel::class.java]
-        taskViewModel.loadSeedData(userEmail)
 
         taskViewModel.getTasksForUser(userEmail).observe(viewLifecycleOwner) { tasks ->
-            currentTasks = tasks
-
-            overdueCountTextView.text = "${ScheduleGenerator.countOverdue(tasks)}\nOverdue"
-            dueTodayCountTextView.text = "${ScheduleGenerator.countDueToday(tasks)}\nDue Today"
-            weekCountTextView.text = "${ScheduleGenerator.countThisWeek(tasks)}\nThis Week"
-
-            val sortedTasks = tasks.sortedByDescending {
-                ScheduleGenerator.calculatePriorityScore(it)
-            }
-
-            todayPlanTextView.text = ScheduleGenerator.generateTodayPlan(sortedTasks)
+            updateDashboard(tasks)
         }
 
-        addTaskButton.setOnClickListener {
-            startActivity(Intent(requireContext(), AddTaskActivity::class.java))
-        }
-
-        checkRemindersButton.setOnClickListener {
-            checkTaskReminders()
+        logoutButton.setOnClickListener {
+            confirmLogout()
         }
 
         return view
     }
 
-    private fun requestNotificationPermissionIfNeeded() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ActivityCompat.checkSelfPermission(
-                    requireContext(),
-                    Manifest.permission.POST_NOTIFICATIONS
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                requestPermissions(
-                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
-                    notificationPermissionRequestCode
-                )
-            }
+    private fun updateGreetingAndDate() {
+        val calendar = Calendar.getInstance()
+        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+
+        val greeting = when {
+            hour < 12 -> "Good Morning"
+            hour < 17 -> "Good Afternoon"
+            else -> "Good Evening"
         }
+
+        greetingTextView.text = "$greeting,👋"
+
+        val dateFormat = SimpleDateFormat(
+            "EEEE, d MMMM yyyy\nhh:mm a",
+            Locale.getDefault()
+        )
+
+        dateTimeTextView.text = dateFormat.format(calendar.time)
     }
 
-    private fun checkTaskReminders() {
-        if (currentTasks.isEmpty()) {
-            Toast.makeText(requireContext(), "No tasks available", Toast.LENGTH_SHORT).show()
-            return
-        }
+    private fun updateDashboard(tasks: List<Task>) {
+        val overdue = ScheduleGenerator.countOverdue(tasks)
+        val dueToday = ScheduleGenerator.countDueToday(tasks)
+        val thisWeek = ScheduleGenerator.countThisWeek(tasks)
+        val completed = tasks.count { it.completed }
 
-        currentTasks.forEachIndexed { index, task ->
-            if (task.completed) return@forEachIndexed
+        overdueCardTextView.text = "$overdue\nOverdue"
+        dueTodayCardTextView.text = "$dueToday\nDue Today"
+        thisWeekCardTextView.text = "$thisWeek\nThis Week"
+        completedCardTextView.text = "$completed\nCompleted"
 
-            val daysRemaining = ScheduleGenerator.calculateDaysRemaining(task.deadline)
+        val activeTasks = tasks
+            .filter { !it.completed }
+            .sortedByDescending {
+                ScheduleGenerator.calculatePriorityScore(it)
+            }
+            .take(3)
 
-            when {
-                daysRemaining < 0 -> {
-                    NotificationHelper.showTaskNotification(
-                        requireContext(),
-                        "Overdue Task",
-                        "${task.title} is overdue. Deadline was ${task.deadline}.",
-                        200 + index
-                    )
-                }
+        studyPlanTextView.text =
+            if (activeTasks.isEmpty()) {
+                "No active tasks today.\nTap Add Task to create a new study plan."
+            } else {
+                activeTasks.mapIndexed { index, task ->
+                    "${index + 1}. ${task.title} (${task.estimatedHours} hrs)"
+                }.joinToString("\n")
+            }
 
-                daysRemaining == 0L -> {
-                    NotificationHelper.showTaskNotification(
-                        requireContext(),
-                        "Task Due Today",
-                        "${task.title} is due today at ${task.deadline}.",
-                        300 + index
-                    )
-                }
+        val upcomingTasks = tasks
+            .filter {
+                !it.completed &&
+                        ScheduleGenerator.calculateDaysRemaining(it.deadline) >= 0
+            }
+            .sortedBy {
+                ScheduleGenerator.calculateDaysRemaining(it.deadline)
+            }
+            .take(3)
 
-                daysRemaining == 1L -> {
-                    NotificationHelper.showTaskNotification(
-                        requireContext(),
-                        "Task Due Tomorrow",
-                        "${task.title} is due tomorrow at ${task.deadline}.",
-                        400 + index
-                    )
+        upcomingDeadlinesTextView.text =
+            if (upcomingTasks.isEmpty()) {
+                "No upcoming deadlines."
+            } else {
+                upcomingTasks.joinToString("\n\n") { task ->
+                    val days = ScheduleGenerator.calculateDaysRemaining(task.deadline)
+
+                    val dueText = when (days) {
+                        0L -> "Due today"
+                        1L -> "Due tomorrow"
+                        else -> "Due in $days days"
+                    }
+
+                    "• ${task.title}\n  ${task.course} - $dueText"
                 }
             }
-        }
+    }
 
-        Toast.makeText(requireContext(), "Task reminders checked", Toast.LENGTH_SHORT).show()
+    private fun confirmLogout() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Logout")
+            .setMessage("Are you sure you want to logout?")
+            .setPositiveButton("Logout") { _, _ ->
+                requireActivity()
+                    .getSharedPreferences("smartacademia_session", Context.MODE_PRIVATE)
+                    .edit()
+                    .clear()
+                    .apply()
+
+                val intent = Intent(requireContext(), LoginActivity::class.java)
+                intent.flags =
+                    Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+
+                startActivity(intent)
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 }

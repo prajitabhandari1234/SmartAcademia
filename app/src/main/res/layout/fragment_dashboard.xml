@@ -2,90 +2,149 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#EAF4FF">
+    android:background="#EAF4FF"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="24dp"
+        android:padding="20dp"
         android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/greetingTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/dashboard_title"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:textColor="#0B5FA5" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="24dp">
+            android:gravity="center_vertical">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/greetingTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Good Morning, Student"
+                    android:textSize="26sp"
+                    android:textStyle="bold"
+                    android:textColor="#0B5FA5" />
+
+                <TextView
+                    android:id="@+id/dateTimeTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#0B5FA5"
+                    android:textSize="14sp"
+                    android:layout_marginTop="4dp" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/logoutButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Logout"
+                android:textAllCaps="false" />
+        </LinearLayout>
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="2"
+            android:layout_marginTop="20dp">
 
             <TextView
-                android:id="@+id/overdueCountTextView"
+                android:id="@+id/overdueCardTextView"
                 android:layout_width="0dp"
                 android:layout_height="90dp"
-                android:layout_weight="1"
+                android:layout_columnWeight="1"
+                android:layout_margin="7dp"
                 android:gravity="center"
                 android:text="0\nOverdue"
-                android:background="#F7B6C2" />
+                android:background="#F7B6C2"
+                android:textColor="#111111"
+                android:textSize="15sp" />
 
             <TextView
-                android:id="@+id/dueTodayCountTextView"
+                android:id="@+id/dueTodayCardTextView"
                 android:layout_width="0dp"
                 android:layout_height="90dp"
-                android:layout_weight="1"
+                android:layout_columnWeight="1"
+                android:layout_margin="7dp"
                 android:gravity="center"
                 android:text="0\nDue Today"
-                android:layout_marginStart="10dp"
-                android:background="#FFD7B5" />
+                android:background="#FFD7B5"
+                android:textColor="#111111"
+                android:textSize="15sp" />
 
             <TextView
-                android:id="@+id/weekCountTextView"
+                android:id="@+id/thisWeekCardTextView"
                 android:layout_width="0dp"
                 android:layout_height="90dp"
-                android:layout_weight="1"
+                android:layout_columnWeight="1"
+                android:layout_margin="7dp"
                 android:gravity="center"
                 android:text="0\nThis Week"
-                android:layout_marginStart="10dp"
-                android:background="#BDE7FF" />
-        </LinearLayout>
+                android:background="#BDE7FF"
+                android:textColor="#111111"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/completedCardTextView"
+                android:layout_width="0dp"
+                android:layout_height="90dp"
+                android:layout_columnWeight="1"
+                android:layout_margin="7dp"
+                android:gravity="center"
+                android:text="0\nCompleted"
+                android:background="#C8E6C9"
+                android:textColor="#111111"
+                android:textSize="15sp" />
+        </GridLayout>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/today_plan"
+            android:text="Today's Study Plan"
             android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="#0B5FA5"
-            android:layout_marginTop="28dp" />
+            android:layout_marginTop="22dp" />
 
         <TextView
-            android:id="@+id/todayPlanTextView"
+            android:id="@+id/studyPlanTextView"
             android:layout_width="match_parent"
-            android:layout_height="140dp"
+            android:layout_height="wrap_content"
+            android:minHeight="120dp"
             android:padding="16dp"
-            android:text="@string/no_tasks"
+            android:text="No tasks available"
             android:background="#A9CBE8"
+            android:textColor="#111111"
+            android:textSize="15sp"
             android:layout_marginTop="8dp" />
 
-        <Button
-            android:id="@+id/addTaskButton"
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/add_task"
-            android:layout_marginTop="24dp" />
+            android:text="Upcoming Deadlines"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#0B5FA5"
+            android:layout_marginTop="22dp" />
 
-        <Button
-            android:id="@+id/checkRemindersButton"
+        <TextView
+            android:id="@+id/upcomingDeadlinesTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/check_reminders"
-            android:layout_marginTop="12dp" />
+            android:minHeight="100dp"
+            android:padding="16dp"
+            android:text="No upcoming deadlines"
+            android:background="#DDE6F2"
+            android:textColor="#111111"
+            android:textSize="15sp"
+            android:layout_marginTop="8dp" />
 
     </LinearLayout>
 </ScrollView>
