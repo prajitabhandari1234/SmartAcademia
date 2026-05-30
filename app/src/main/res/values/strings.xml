@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">SmartAcademia</string>
     <string name="title_activity_maps">MapsActivity</string>
+
     <string name="login_title">Login</string>
     <string name="register_title">Create new Account</string>
     <string name="email_hint">Enter your email address</string>
@@ -11,11 +12,13 @@
     <string name="login_button">Log in</string>
     <string name="signup_button">Sign Up</string>
     <string name="create_account_button">Create account</string>
+
     <string name="empty_fields_message">Please fill all required fields</string>
     <string name="email_exists_message">This email is already registered</string>
     <string name="register_success_message">Account created. Please verify your email</string>
     <string name="invalid_login_message">Invalid email or password</string>
     <string name="verify_first_message">Please verify your account first</string>
+
     <string name="verify_otp_title">Verify OTP</string>
     <string name="otp_info">Enter the 6-digit verification code. This code expires in 10 minutes.</string>
     <string name="otp_hint">Enter OTP code</string>
@@ -26,23 +29,27 @@
     <string name="otp_expired_message">OTP expired. Please resend code.</string>
     <string name="otp_verified_message">Account verified successfully</string>
     <string name="user_not_found_message">User not found</string>
+
     <string name="nav_home">Home</string>
     <string name="nav_tasks">Tasks</string>
     <string name="nav_schedule">Schedule</string>
     <string name="nav_analytics">Analytics</string>
+
     <string name="dashboard_title">Good Morning</string>
-    <string name="today_plan">Today’s Study Plan</string>
+    <string name="today_plan">Today Study Plan</string>
     <string name="weekly_progress">Weekly Progress</string>
+
     <string name="my_tasks">My Tasks</string>
     <string name="sorted_by_priority">Sorted by Priority</string>
     <string name="add_task">Add Task</string>
     <string name="no_tasks">No tasks available</string>
     <string name="email_button">Email</string>
+
     <string name="add_task_title">Add New Task</string>
     <string name="task_title_hint">Task name</string>
     <string name="course_hint">Course code</string>
     <string name="deadline_hint">Deadline e.g. 2026-06-05 23:45</string>
-    <string name="weight_hint">Grade weight %</string>
+    <string name="weight_hint">Grade weight percent</string>
     <string name="hours_hint">Estimated hours</string>
     <string name="notes_hint">Notes</string>
     <string name="latitude_hint">Latitude optional</string>
@@ -58,26 +65,51 @@
     <string name="delete_button">Delete</string>
     <string name="cancel_button">Cancel</string>
     <string name="save_changes_button">Save Changes</string>
+
     <string name="email_subject">SmartAcademia Task Reminder: %1$s</string>
-    <string name="email_body">Hi,
-
-I want to share this academic task with you:
-
-Task: %1$s
-Course: %2$s
-Deadline: %3$s
-Weight: %4$d%%
-Estimated Hours: %5$d
-Notes: %6$s
-
-Sent from SmartAcademia.</string>
-
+    <string name="email_body">Hi,\n\nI want to share this academic task with you:\n\nTask: %1$s\nCourse: %2$s\nDeadline: %3$s\nWeight: %4$d%%\nEstimated Hours: %5$d\nNotes: %6$s\n\nSent from SmartAcademia.</string>
     <string name="email_chooser_title">Send task using:</string>
     <string name="email_missing_message">Email cannot open because required task details are missing</string>
     <string name="no_email_app_message">No email app found</string>
+
     <string name="test_notification">Test Notification</string>
     <string name="check_reminders">Check Task Reminders</string>
     <string name="notification_permission_denied">Notification permission denied</string>
     <string name="notification_test_title">SmartAcademia Reminder</string>
     <string name="notification_test_message">This is a test notification from SmartAcademia.</string>
+
+    <string name="analytics_title">Analytics</string>
+    <string name="on_time_rate">On-time Rate</string>
+    <string name="task_done">Task Done</string>
+    <string name="overdue">Overdue</string>
+    <string name="upcoming">Upcoming</string>
+    <string name="grade_projection">Grade Impact Projection</string>
+    <string name="tasks_completed_per_day">Tasks Completed per day</string>
+
+    <string name="smart_schedule">Smart Schedule</string>
+    <string name="day">Day</string>
+    <string name="week">Week</string>
+    <string name="previous_week">Previous Week</string>
+    <string name="next_week">Next Week</string>
+    <string name="regenerate_plan">Regenerate Today Plan</string>
+
+    <string name="regenerate_plan_title">Regenerate Plan</string>
+    <string name="generate_plan">Generate Plan</string>
+    <string name="delete_plan_button">Delete Plan</string>
+    <string name="back_to_schedule">Back to Schedule</string>
+
+    <string name="task_location">Task Location</string>
+    <string name="my_location">My Location</string>
+    <string name="open_location">Open Location</string>
+
+    <string name="view_details">View Details</string>
+    <string name="edit_plan">Edit Plan</string>
+    <string name="delete_plan">Delete Plan</string>
+    <string name="plan_saved">Plan saved successfully</string>
+    <string name="plan_deleted">Plan deleted successfully</string>
+
+    <string name="no_schedule">No plans for this day</string>
+    <string name="create_schedule">Tap Regenerate Today Plan to create your first schedule</string>
+
+    <string name="logout">Logout</string>
 </resources>
