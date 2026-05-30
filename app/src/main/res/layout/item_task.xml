@@ -34,33 +34,50 @@
         <Button
             android:id="@+id/editTaskButton"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_weight="1"
-            android:text="@string/edit_button" />
+            android:text="Edit"
+            android:textAllCaps="false"
+            android:textSize="12sp" />
 
         <Button
             android:id="@+id/deleteTaskButton"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_weight="1"
-            android:text="@string/delete_button"
-            android:layout_marginStart="6dp" />
+            android:text="Delete"
+            android:textAllCaps="false"
+            android:textSize="12sp"
+            android:layout_marginStart="4dp" />
 
         <Button
             android:id="@+id/emailTaskButton"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_weight="1"
-            android:text="@string/email_button"
-            android:layout_marginStart="6dp" />
+            android:text="Email"
+            android:textAllCaps="false"
+            android:textSize="12sp"
+            android:layout_marginStart="4dp" />
 
         <Button
             android:id="@+id/mapTaskButton"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_weight="1"
             android:text="Map"
-            android:layout_marginStart="6dp" />
+            android:textAllCaps="false"
+            android:textSize="12sp"
+            android:layout_marginStart="4dp" />
     </LinearLayout>
+
+    <Button
+        android:id="@+id/completeTaskButton"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
+        android:text="Mark as Completed"
+        android:textAllCaps="false"
+        android:textSize="14sp" />
 
 </LinearLayout>

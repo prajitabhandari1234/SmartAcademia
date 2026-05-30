@@ -25,6 +25,7 @@ class TaskListFragment : Fragment() {
     private lateinit var taskViewModel: TaskViewModel
     private lateinit var taskAdapter: TaskAdapter
     private lateinit var sortSpinner: Spinner
+
     private var allTasks: List<Task> = emptyList()
     private var userEmail: String = ""
 
@@ -36,7 +37,10 @@ class TaskListFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_task_list, container, false)
 
         val sharedPreferences = requireActivity()
-            .getSharedPreferences("smartacademia_session", android.content.Context.MODE_PRIVATE)
+            .getSharedPreferences(
+                "smartacademia_session",
+                android.content.Context.MODE_PRIVATE
+            )
 
         userEmail = sharedPreferences.getString("email", "") ?: ""
 
@@ -50,9 +54,21 @@ class TaskListFragment : Fragment() {
 
         setupSortSpinner()
 
-        taskAdapter = TaskAdapter(emptyList()) { task ->
-            taskViewModel.deleteTaskById(task.id)
-        }
+        taskAdapter = TaskAdapter(
+            emptyList(),
+            onDeleteClick = { task ->
+                taskViewModel.deleteTaskById(task.id)
+            },
+            onCompleteClick = { task ->
+                task.completed = true
+                taskViewModel.updateTask(task)
+                Toast.makeText(
+                    requireContext(),
+                    "Task marked as completed",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        )
 
         taskRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         taskRecyclerView.adapter = taskAdapter
@@ -63,7 +79,11 @@ class TaskListFragment : Fragment() {
 
         fetchTasksButton.setOnClickListener {
             taskViewModel.fetchTasksFromApi(userEmail)
-            Toast.makeText(requireContext(), "Fetching remote tasks...", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                requireContext(),
+                "Fetching remote tasks...",
+                Toast.LENGTH_SHORT
+            ).show()
         }
 
         taskViewModel.loadSeedData(userEmail)
@@ -77,7 +97,13 @@ class TaskListFragment : Fragment() {
     }
 
     private fun setupSortSpinner() {
-        val sortOptions = listOf("Priority", "Deadline", "Course", "Weight")
+        val sortOptions = listOf(
+            "Priority",
+            "Deadline",
+            "Course",
+            "Weight",
+            "Status"
+        )
 
         val adapter = ArrayAdapter(
             requireContext(),
@@ -88,18 +114,20 @@ class TaskListFragment : Fragment() {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         sortSpinner.adapter = adapter
 
-        sortSpinner.setOnItemSelectedListener(object : android.widget.AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: android.widget.AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                applySorting()
-            }
+        sortSpinner.setOnItemSelectedListener(
+            object : android.widget.AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: android.widget.AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    applySorting()
+                }
 
-            override fun onNothingSelected(parent: android.widget.AdapterView<*>?) {}
-        })
+                override fun onNothingSelected(parent: android.widget.AdapterView<*>?) {}
+            }
+        )
     }
 
     private fun applySorting() {
@@ -107,8 +135,16 @@ class TaskListFragment : Fragment() {
 
         val sortedTasks = when (selectedSort) {
             "Deadline" -> allTasks.sortedBy { it.deadline }
+
             "Course" -> allTasks.sortedBy { it.course }
+
             "Weight" -> allTasks.sortedByDescending { it.weight }
+
+            "Status" -> allTasks.sortedWith(
+                compareBy<Task> { it.completed }
+                    .thenBy { ScheduleGenerator.calculateDaysRemaining(it.deadline) }
+            )
+
             else -> allTasks.sortedByDescending {
                 ScheduleGenerator.calculatePriorityScore(it)
             }

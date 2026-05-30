@@ -2,6 +2,7 @@ package au.edu.cqu.smartacademia.adapter
 
 import android.app.AlertDialog
 import android.content.Intent
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,22 +17,26 @@ import au.edu.cqu.smartacademia.utils.ScheduleGenerator
 
 class TaskAdapter(
     private var tasks: List<Task>,
-    private val onDeleteClick: (Task) -> Unit
+    private val onDeleteClick: (Task) -> Unit,
+    private val onCompleteClick: (Task) -> Unit
 ) : RecyclerView.Adapter<TaskAdapter.TaskHolder>() {
 
     class TaskHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val taskTitleTextView: TextView = itemView.findViewById(R.id.taskTitleTextView)
         val taskCourseTextView: TextView = itemView.findViewById(R.id.taskCourseTextView)
         val taskDeadlineTextView: TextView = itemView.findViewById(R.id.taskDeadlineTextView)
+
         val editTaskButton: Button = itemView.findViewById(R.id.editTaskButton)
         val deleteTaskButton: Button = itemView.findViewById(R.id.deleteTaskButton)
         val emailTaskButton: Button = itemView.findViewById(R.id.emailTaskButton)
         val mapTaskButton: Button = itemView.findViewById(R.id.mapTaskButton)
+        val completeTaskButton: Button = itemView.findViewById(R.id.completeTaskButton)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_task, parent, false)
+
         return TaskHolder(view)
     }
 
@@ -43,14 +48,37 @@ class TaskAdapter(
         holder.taskDeadlineTextView.text = task.deadline
 
         val daysRemaining = ScheduleGenerator.calculateDaysRemaining(task.deadline)
+
         holder.itemView.setBackgroundColor(
             when {
-                daysRemaining < 0 -> 0xFFF7B6C2.toInt()
-                daysRemaining == 0L -> 0xFFFFD7B5.toInt()
-                daysRemaining in 1..7 -> 0xFFBDE7FF.toInt()
-                else -> 0xFFA9CBE8.toInt()
+                task.completed -> Color.parseColor("#C8E6C9")
+                daysRemaining < 0 -> Color.parseColor("#F7B6C2")
+                daysRemaining == 0L -> Color.parseColor("#FFD7B5")
+                daysRemaining in 1..7 -> Color.parseColor("#BDE7FF")
+                else -> Color.parseColor("#A9CBE8")
             }
         )
+
+        if (task.completed) {
+            holder.completeTaskButton.text = "Completed"
+            holder.completeTaskButton.isEnabled = false
+            holder.completeTaskButton.setBackgroundColor(Color.parseColor("#4CAF50"))
+        } else {
+            holder.completeTaskButton.text = "Mark as Completed"
+            holder.completeTaskButton.isEnabled = true
+            holder.completeTaskButton.setBackgroundColor(Color.parseColor("#6C63FF"))
+
+            holder.completeTaskButton.setOnClickListener {
+                AlertDialog.Builder(holder.itemView.context)
+                    .setTitle("Complete Task")
+                    .setMessage("Mark this task as completed?")
+                    .setPositiveButton("Yes") { _, _ ->
+                        onCompleteClick(task)
+                    }
+                    .setNegativeButton("Cancel", null)
+                    .show()
+            }
+        }
 
         holder.editTaskButton.setOnClickListener {
             val intent = Intent(holder.itemView.context, AddTaskActivity::class.java)
@@ -62,7 +90,9 @@ class TaskAdapter(
             AlertDialog.Builder(holder.itemView.context)
                 .setTitle("Delete Task")
                 .setMessage("Are you sure you want to delete this task?")
-                .setPositiveButton("Delete") { _, _ -> onDeleteClick(task) }
+                .setPositiveButton("Delete") { _, _ ->
+                    onDeleteClick(task)
+                }
                 .setNegativeButton("Cancel", null)
                 .show()
         }
@@ -72,7 +102,10 @@ class TaskAdapter(
         }
 
         holder.mapTaskButton.setOnClickListener {
-            val intent = Intent(holder.itemView.context, au.edu.cqu.smartacademia.activities.MapsActivity::class.java)
+            val intent = Intent(
+                holder.itemView.context,
+                au.edu.cqu.smartacademia.activities.MapsActivity::class.java
+            )
             intent.putExtra("task", task)
             holder.itemView.context.startActivity(intent)
         }
@@ -82,7 +115,11 @@ class TaskAdapter(
         val context = view.context
 
         if (task.title.isBlank() || task.course.isBlank() || task.deadline.isBlank()) {
-            Toast.makeText(context, context.getString(R.string.email_missing_message), Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                context,
+                context.getString(R.string.email_missing_message),
+                Toast.LENGTH_SHORT
+            ).show()
             return
         }
 
@@ -106,10 +143,17 @@ class TaskAdapter(
 
         try {
             context.startActivity(
-                Intent.createChooser(intent, context.getString(R.string.email_chooser_title))
+                Intent.createChooser(
+                    intent,
+                    context.getString(R.string.email_chooser_title)
+                )
             )
         } catch (e: Exception) {
-            Toast.makeText(context, context.getString(R.string.no_email_app_message), Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                context,
+                context.getString(R.string.no_email_app_message),
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
