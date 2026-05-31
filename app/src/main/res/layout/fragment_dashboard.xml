@@ -146,5 +146,13 @@
             android:textSize="15sp"
             android:layout_marginTop="8dp" />
 
+        <Button
+            android:id="@+id/enableAutoReminderButton"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="18dp"
+            android:text="Enable 4-Hour Reminders"
+            android:textAllCaps="false" />
+
     </LinearLayout>
 </ScrollView>

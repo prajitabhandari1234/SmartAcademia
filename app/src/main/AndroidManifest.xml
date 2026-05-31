@@ -43,6 +43,10 @@
             android:name=".activities.RegenerateScheduleActivity"
             android:exported="false" />
 
+        <receiver
+            android:name=".utils.ReminderReceiver"
+            android:exported="false" />
+
     </application>
 
 </manifest>

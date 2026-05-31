@@ -8,12 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import au.edu.cqu.smartacademia.R
 import au.edu.cqu.smartacademia.activities.LoginActivity
 import au.edu.cqu.smartacademia.database.Task
+import au.edu.cqu.smartacademia.utils.ReminderScheduler
 import au.edu.cqu.smartacademia.utils.ScheduleGenerator
 import au.edu.cqu.smartacademia.viewmodel.TaskViewModel
 import java.text.SimpleDateFormat
@@ -34,6 +36,8 @@ class DashboardFragment : Fragment() {
     private lateinit var studyPlanTextView: TextView
     private lateinit var upcomingDeadlinesTextView: TextView
 
+    private var latestTasks: List<Task> = emptyList()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -51,6 +55,8 @@ class DashboardFragment : Fragment() {
         upcomingDeadlinesTextView = view.findViewById(R.id.upcomingDeadlinesTextView)
 
         val logoutButton = view.findViewById<Button>(R.id.logoutButton)
+        val enableAutoReminderButton =
+            view.findViewById<Button>(R.id.enableAutoReminderButton)
 
         val sharedPreferences = requireActivity()
             .getSharedPreferences("smartacademia_session", Context.MODE_PRIVATE)
@@ -62,11 +68,16 @@ class DashboardFragment : Fragment() {
         taskViewModel = ViewModelProvider(this)[TaskViewModel::class.java]
 
         taskViewModel.getTasksForUser(userEmail).observe(viewLifecycleOwner) { tasks ->
+            latestTasks = tasks
             updateDashboard(tasks)
         }
 
         logoutButton.setOnClickListener {
             confirmLogout()
+        }
+
+        enableAutoReminderButton.setOnClickListener {
+            enableAutomaticReminders()
         }
 
         return view
@@ -82,7 +93,7 @@ class DashboardFragment : Fragment() {
             else -> "Good Evening"
         }
 
-        greetingTextView.text = "$greeting,👋"
+        greetingTextView.text = "$greeting, Prajita 👋"
 
         val dateFormat = SimpleDateFormat(
             "EEEE, d MMMM yyyy\nhh:mm a",
@@ -145,6 +156,46 @@ class DashboardFragment : Fragment() {
                     "• ${task.title}\n  ${task.course} - $dueText"
                 }
             }
+    }
+
+    private fun enableAutomaticReminders() {
+        val dueAndUpcomingTasks = latestTasks
+            .filter {
+                !it.completed &&
+                        ScheduleGenerator.calculateDaysRemaining(it.deadline) <= 7
+            }
+            .sortedBy {
+                ScheduleGenerator.calculateDaysRemaining(it.deadline)
+            }
+
+        val reminderMessage =
+            if (dueAndUpcomingTasks.isEmpty()) {
+                "No due or upcoming assignments in the next 7 days."
+            } else {
+                dueAndUpcomingTasks.take(5).joinToString("\n") { task ->
+                    val days = ScheduleGenerator.calculateDaysRemaining(task.deadline)
+
+                    val dueText = when {
+                        days < 0 -> "Overdue"
+                        days == 0L -> "Due today"
+                        days == 1L -> "Due tomorrow"
+                        else -> "Due in $days days"
+                    }
+
+                    "${task.title} - $dueText"
+                }
+            }
+
+        ReminderScheduler.startReminder(
+            requireContext(),
+            reminderMessage
+        )
+
+        Toast.makeText(
+            requireContext(),
+            "Automatic reminders enabled every 4 hours for 7 days",
+            Toast.LENGTH_LONG
+        ).show()
     }
 
     private fun confirmLogout() {
