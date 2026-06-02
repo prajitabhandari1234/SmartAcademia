@@ -29,6 +29,11 @@ class RegisterActivity : AppCompatActivity() {
         val institutionEditText = findViewById<EditText>(R.id.institutionEditText)
         val timezoneEditText = findViewById<EditText>(R.id.timezoneEditText)
         val createAccountButton = findViewById<Button>(R.id.createAccountButton)
+        val backToLoginButton = findViewById<Button>(R.id.backToLoginButton)
+
+        backToLoginButton.setOnClickListener {
+            finish()
+        }
 
         createAccountButton.setOnClickListener {
             val fullName = fullNameEditText.text.toString().trim()
@@ -38,7 +43,11 @@ class RegisterActivity : AppCompatActivity() {
             val timezone = timezoneEditText.text.toString().trim()
 
             if (fullName.isEmpty() || email.isEmpty() || password.isEmpty() || institution.isEmpty()) {
-                Toast.makeText(this, getString(R.string.empty_fields_message), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this,
+                    getString(R.string.empty_fields_message),
+                    Toast.LENGTH_SHORT
+                ).show()
                 return@setOnClickListener
             }
 
@@ -53,14 +62,22 @@ class RegisterActivity : AppCompatActivity() {
 
             userViewModel.registerUser(user) { success ->
                 if (success) {
-                    Toast.makeText(this, getString(R.string.register_success_message), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this,
+                        getString(R.string.register_success_message),
+                        Toast.LENGTH_SHORT
+                    ).show()
 
                     val intent = Intent(this, VerifyOtpActivity::class.java)
                     intent.putExtra("email", email)
                     startActivity(intent)
                     finish()
                 } else {
-                    Toast.makeText(this, getString(R.string.email_exists_message), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this,
+                        getString(R.string.email_exists_message),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
