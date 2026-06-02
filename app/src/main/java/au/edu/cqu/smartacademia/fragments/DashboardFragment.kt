@@ -93,7 +93,18 @@ class DashboardFragment : Fragment() {
             else -> "Good Evening"
         }
 
-        greetingTextView.text = "$greeting, Prajita 👋"
+        val sharedPreferences = requireActivity()
+            .getSharedPreferences("smartacademia_session", Context.MODE_PRIVATE)
+
+        val fullName = sharedPreferences.getString("full_name", "Student") ?: "Student"
+
+        val firstName = fullName
+            .trim()
+            .split(" ")
+            .firstOrNull()
+            ?: "Student"
+
+        greetingTextView.text = "$greeting, $firstName 👋"
 
         val dateFormat = SimpleDateFormat(
             "EEEE, d MMMM yyyy\nhh:mm a",

@@ -51,8 +51,15 @@ class LoginActivity : AppCompatActivity() {
                     intent.putExtra("email", email)
                     startActivity(intent)
                 } else {
-                    val sharedPreferences = getSharedPreferences("smartacademia_session", MODE_PRIVATE)
-                    sharedPreferences.edit().putString("email", email).apply()
+                    val sharedPreferences = getSharedPreferences(
+                        "smartacademia_session",
+                        MODE_PRIVATE
+                    )
+
+                    sharedPreferences.edit()
+                        .putString("email", user.email)
+                        .putString("full_name", user.fullName)
+                        .apply()
 
                     startActivity(Intent(this, MainActivity::class.java))
                     finish()
