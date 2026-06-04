@@ -98,6 +98,7 @@ class TaskAdapter(
      * - Delete button.
      * - Email button.
      * - Map button.
+     * - Task card click for map navigation.
      *
      * @param holder TaskHolder to bind.
      * @param position Task position in the list.
@@ -143,6 +144,8 @@ class TaskAdapter(
             holder.completeTaskButton.setBackgroundColor(
                 Color.parseColor("#4CAF50")
             )
+
+            holder.completeTaskButton.setOnClickListener(null)
         } else {
             holder.completeTaskButton.text =
                 holder.itemView.context.getString(R.string.mark_as_completed)
@@ -156,6 +159,10 @@ class TaskAdapter(
             holder.completeTaskButton.setOnClickListener {
                 showCompleteTaskDialog(holder, task)
             }
+        }
+
+        holder.itemView.setOnClickListener {
+            openTaskLocation(holder, task)
         }
 
         holder.editTaskButton.setOnClickListener {

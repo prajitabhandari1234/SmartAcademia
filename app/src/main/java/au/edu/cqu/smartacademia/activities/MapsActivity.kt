@@ -92,12 +92,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         if (task != null && isValidLocation(task.lat, task.lon)) {
             taskLatLng = LatLng(task.lat, task.lon)
 
-            googleMap?.addMarker(
+            val marker = googleMap?.addMarker(
                 MarkerOptions()
                     .position(taskLatLng!!)
                     .title(task.title)
                     .snippet("${task.course} - ${task.deadline}")
             )
+
+            marker?.showInfoWindow()
 
             googleMap?.moveCamera(
                 CameraUpdateFactory.newLatLngZoom(
