@@ -12,13 +12,20 @@ import au.edu.cqu.smartacademia.R
 import au.edu.cqu.smartacademia.database.Task
 import au.edu.cqu.smartacademia.utils.ScheduleGenerator
 import au.edu.cqu.smartacademia.viewmodel.TaskViewModel
+import java.util.UUID
 
+/**
+ * Activity used to add, edit and delete academic tasks.
+ * Supports Assignment 3 requirements by allowing users
+ * to create task data that is stored in the Room database
+ * and later displayed in the RecyclerView, schedule,
+ * analytics, email and map features.
+ */
 class AddTaskActivity : AppCompatActivity() {
 
     private lateinit var taskViewModel: TaskViewModel
     private var userEmail: String = ""
     private var editingTaskId: String? = null
-
     private lateinit var titleEditText: EditText
     private lateinit var courseEditText: EditText
     private lateinit var deadlineEditText: EditText
@@ -31,6 +38,12 @@ class AddTaskActivity : AppCompatActivity() {
     private lateinit var deleteTaskButton: Button
     private lateinit var cancelButton: Button
 
+    /**
+     * Creates the Add/Edit Task screen.
+     * Initialises the ViewModel, connects UI controls,
+     * identifies whether the screen is adding or editing,
+     * and sets button actions.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_task)
@@ -66,25 +79,18 @@ class AddTaskActivity : AppCompatActivity() {
         }
 
         deleteTaskButton.setOnClickListener {
-            editingTaskId?.let {
-                taskViewModel.deleteTaskById(it)
-                Toast.makeText(this, getString(R.string.task_deleted_message), Toast.LENGTH_SHORT).show()
-                finish()
-            }
+            deleteCurrentTask()
         }
 
         cancelButton.setOnClickListener {
-            AlertDialog.Builder(this)
-                .setTitle("Discard Changes?")
-                .setMessage("Any unsaved changes will be lost.")
-                .setPositiveButton("Discard") { _, _ ->
-                    finish()
-                }
-                .setNegativeButton("Continue Editing", null)
-                .show()
+            showDiscardChangesDialog()
         }
     }
 
+    /**
+     * Loads an existing task and displays its values in the form for editing.
+     * @param taskId Unique ID of the task being edited.
+     */
     private fun loadTaskForEditing(taskId: String) {
         taskViewModel.getTaskById(taskId) { task ->
             if (task != null) {
@@ -100,6 +106,11 @@ class AddTaskActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Saves a new task or updates an existing task.
+     * Required fields are validated before saving.
+     * A priority score is calculated before insertion.
+     */
     private fun saveOrUpdateTask() {
         val title = titleEditText.text.toString().trim()
         val course = courseEditText.text.toString().trim()
@@ -107,15 +118,23 @@ class AddTaskActivity : AppCompatActivity() {
         val weightText = weightEditText.text.toString().trim()
         val hoursText = hoursEditText.text.toString().trim()
 
-        if (title.isEmpty() || course.isEmpty() || deadline.isEmpty()
-            || weightText.isEmpty() || hoursText.isEmpty()
+        if (
+            title.isEmpty() ||
+            course.isEmpty() ||
+            deadline.isEmpty() ||
+            weightText.isEmpty() ||
+            hoursText.isEmpty()
         ) {
-            Toast.makeText(this, getString(R.string.empty_fields_message), Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this,
+                getString(R.string.empty_fields_message),
+                Toast.LENGTH_SHORT
+            ).show()
             return
         }
 
         val task = Task(
-            id = editingTaskId ?: java.util.UUID.randomUUID().toString(),
+            id = editingTaskId ?: UUID.randomUUID().toString(),
             userEmail = userEmail,
             title = title,
             course = course,
@@ -127,7 +146,9 @@ class AddTaskActivity : AppCompatActivity() {
             lon = lonEditText.text.toString().toDoubleOrNull() ?: 151.2093
         )
 
-        task.priorityScore = ScheduleGenerator.calculatePriorityScore(task)
+        task.priorityScore =
+            ScheduleGenerator.calculatePriorityScore(task)
+
         taskViewModel.insertTask(task)
 
         val message = if (editingTaskId == null) {
@@ -136,7 +157,47 @@ class AddTaskActivity : AppCompatActivity() {
             R.string.task_updated_message
         }
 
-        Toast.makeText(this, getString(message), Toast.LENGTH_SHORT).show()
+        Toast.makeText(
+            this,
+            getString(message),
+            Toast.LENGTH_SHORT
+        ).show()
+
         finish()
+    }
+
+    /**
+     * Deletes the task currently being edited.
+     */
+    private fun deleteCurrentTask() {
+        editingTaskId?.let { taskId ->
+            taskViewModel.deleteTaskById(taskId)
+
+            Toast.makeText(
+                this,
+                getString(R.string.task_deleted_message),
+                Toast.LENGTH_SHORT
+            ).show()
+
+            finish()
+        }
+    }
+
+    /**
+     * Displays confirmation dialog before leaving
+     * the form with unsaved changes.
+     */
+    private fun showDiscardChangesDialog() {
+        AlertDialog.Builder(this)
+            .setTitle(getString(R.string.discard_changes_title))
+            .setMessage(getString(R.string.discard_changes_message))
+            .setPositiveButton(getString(R.string.discard_button)) { _, _ ->
+                finish()
+            }
+            .setNegativeButton(
+                getString(R.string.continue_editing_button),
+                null
+            )
+            .show()
     }
 }

@@ -2,6 +2,7 @@
     <string name="app_name">SmartAcademia</string>
     <string name="title_activity_maps">MapsActivity</string>
 
+    <!-- Login and Register -->
     <string name="login_title">Login</string>
     <string name="register_title">Create new Account</string>
     <string name="email_hint">Enter your email address</string>
@@ -12,13 +13,15 @@
     <string name="login_button">Log in</string>
     <string name="signup_button">Sign Up</string>
     <string name="create_account_button">Create account</string>
-
+    <string name="back_to_login">Back to Login</string>
     <string name="empty_fields_message">Please fill all required fields</string>
     <string name="email_exists_message">This email is already registered</string>
     <string name="register_success_message">Account created. Please verify your email</string>
     <string name="invalid_login_message">Invalid email or password</string>
     <string name="verify_first_message">Please verify your account first</string>
+    <string name="default_timezone">UTC+10 - Sydney/AU</string>
 
+    <!-- OTP -->
     <string name="verify_otp_title">Verify OTP</string>
     <string name="otp_info">Enter the 6-digit verification code. This code expires in 10 minutes.</string>
     <string name="otp_hint">Enter OTP code</string>
@@ -29,23 +32,62 @@
     <string name="otp_expired_message">OTP expired. Please resend code.</string>
     <string name="otp_verified_message">Account verified successfully</string>
     <string name="user_not_found_message">User not found</string>
+    <string name="demo_otp_label">Demo OTP: %1$s</string>
 
+    <!-- Navigation -->
     <string name="nav_home">Home</string>
     <string name="nav_tasks">Tasks</string>
     <string name="nav_schedule">Schedule</string>
     <string name="nav_analytics">Analytics</string>
 
+    <!-- Dashboard -->
     <string name="dashboard_title">Good Morning</string>
+    <string name="good_morning">Good Morning</string>
+    <string name="good_afternoon">Good Afternoon</string>
+    <string name="good_evening">Good Evening</string>
+    <string name="default_student">Student</string>
+    <string name="greeting_format">%1$s, %2$s 👋</string>
     <string name="today_plan">Today Study Plan</string>
+    <string name="todays_study_plan">Today\'s Study Plan</string>
     <string name="weekly_progress">Weekly Progress</string>
+    <string name="overdue_card">Overdue</string>
+    <string name="due_today_card">Due Today</string>
+    <string name="this_week_card">This Week</string>
+    <string name="completed_card">Completed</string>
+    <string name="completed">Completed</string>
+    <string name="no_active_tasks">No active tasks today.\nTap Add Task to create a new study plan.</string>
+    <string name="no_active_tasks_today">No active tasks today.\nTap Add Task to create a new study plan.</string>
+    <string name="upcoming_deadlines">Upcoming Deadlines</string>
+    <string name="no_upcoming_deadlines">No upcoming deadlines.</string>
+    <string name="enable_four_hour_reminders">Enable 4-Hour Reminders</string>
+    <string name="auto_reminder_enabled">Automatic reminders enabled every 4 hours for 7 days</string>
+    <string name="automatic_reminders_enabled">Automatic reminders enabled every 4 hours for 7 days</string>
+    <string name="no_due_assignments">No due or upcoming assignments in the next 7 days.</string>
 
+    <!-- Task List -->
     <string name="my_tasks">My Tasks</string>
+    <string name="active_tasks">Active Tasks</string>
+    <string name="completed_tasks">Completed Tasks</string>
+    <string name="all_tasks">All Tasks</string>
+    <string name="priority">Priority</string>
+    <string name="deadline">Deadline</string>
+    <string name="course">Course</string>
+    <string name="weight">Weight</string>
+    <string name="showing_active_tasks">Showing Active Tasks</string>
+    <string name="showing_completed_tasks">Showing Completed Tasks</string>
+    <string name="showing_all_tasks">Showing All Tasks</string>
     <string name="sorted_by_priority">Sorted by Priority</string>
+    <string name="sorted_by_deadline">Sorted by Deadline</string>
+    <string name="sorted_by_course">Sorted by Course</string>
+    <string name="sorted_by_weight">Sorted by Weight</string>
     <string name="add_task">Add Task</string>
     <string name="no_tasks">No tasks available</string>
-    <string name="email_button">Email</string>
+    <string name="task_completed_message">Task marked as completed</string>
+    <string name="fetching_tasks_message">Fetching remote tasks...</string>
 
+    <!-- Add/Edit Task -->
     <string name="add_task_title">Add New Task</string>
+    <string name="edit_task_title">Edit Task</string>
     <string name="task_title_hint">Task name</string>
     <string name="course_hint">Course code</string>
     <string name="deadline_hint">Deadline e.g. 2026-06-05 23:45</string>
@@ -55,61 +97,172 @@
     <string name="latitude_hint">Latitude optional</string>
     <string name="longitude_hint">Longitude optional</string>
     <string name="save_task_button">Save Task</string>
+    <string name="save_changes_button">Save Changes</string>
     <string name="task_saved_message">Task saved successfully</string>
-    <string name="delete_task">Delete Task</string>
-    <string name="task_deleted_message">Task deleted successfully</string>
     <string name="task_updated_message">Task updated successfully</string>
-    <string name="edit_task_title">Edit Task</string>
-    <string name="sort_by">Sort by</string>
+    <string name="task_deleted_message">Task deleted successfully</string>
+    <string name="discard_changes_title">Discard Changes?</string>
+    <string name="discard_changes_message">Any unsaved changes will be lost.</string>
+    <string name="discard_button">Discard</string>
+    <string name="continue_editing_button">Continue Editing</string>
+
+    <!-- Task Actions -->
     <string name="edit_button">Edit</string>
     <string name="delete_button">Delete</string>
     <string name="cancel_button">Cancel</string>
-    <string name="save_changes_button">Save Changes</string>
+    <string name="email_button">Email</string>
+    <string name="map_button">Map</string>
+    <string name="delete_task">Delete Task</string>
+    <string name="delete_task_confirm_message">Are you sure you want to delete this task?</string>
+    <string name="mark_as_completed">Mark as Completed</string>
+    <string name="completed_button">Completed</string>
+    <string name="complete_task_title">Complete Task</string>
+    <string name="complete_task_message">Mark this task as completed?</string>
+    <string name="task_marked_completed">Task marked as completed</string>
+    <string name="yes_button">Yes</string>
 
+    <!-- Email -->
     <string name="email_subject">SmartAcademia Task Reminder: %1$s</string>
     <string name="email_body">Hi,\n\nI want to share this academic task with you:\n\nTask: %1$s\nCourse: %2$s\nDeadline: %3$s\nWeight: %4$d%%\nEstimated Hours: %5$d\nNotes: %6$s\n\nSent from SmartAcademia.</string>
     <string name="email_chooser_title">Send task using:</string>
     <string name="email_missing_message">Email cannot open because required task details are missing</string>
     <string name="no_email_app_message">No email app found</string>
+    <string name="no_notes_added">No notes added</string>
 
+    <!-- Notifications -->
     <string name="test_notification">Test Notification</string>
     <string name="check_reminders">Check Task Reminders</string>
     <string name="notification_permission_denied">Notification permission denied</string>
     <string name="notification_test_title">SmartAcademia Reminder</string>
     <string name="notification_test_message">This is a test notification from SmartAcademia.</string>
+    <string name="notification_channel_name">Task Reminders</string>
+    <string name="notification_channel_description">Notifications for due, overdue, and upcoming academic tasks</string>
+    <string name="assignment_reminder_title">SmartAcademia Assignment Reminder</string>
+    <string name="default_reminder_message">Check your due and upcoming assignments.</string>
+    <string name="no_assignments_next_week">No due or upcoming assignments in the next 7 days.</string>
+    <string name="overdue_status">Overdue</string>
+    <string name="due_today_status">Due today</string>
+    <string name="due_tomorrow_status">Due tomorrow</string>
 
+    <!-- Analytics -->
     <string name="analytics_title">Analytics</string>
     <string name="on_time_rate">On-time Rate</string>
+    <string name="on_time_rate_label">On-time\nRate</string>
     <string name="task_done">Task Done</string>
+    <string name="task_done_label">Task Done</string>
     <string name="overdue">Overdue</string>
+    <string name="overdue_label">Overdue</string>
     <string name="upcoming">Upcoming</string>
+    <string name="upcoming_label">Upcoming</string>
+    <string name="productivity_label">Productivity</string>
+    <string name="study_load_label">Study Load</string>
     <string name="grade_projection">Grade Impact Projection</string>
     <string name="tasks_completed_per_day">Tasks Completed per day</string>
+    <string name="progress_chart_title">Progress</string>
+    <string name="tasks_completed_chart">Tasks Completed</string>
+    <string name="in_progress">In Progress</string>
+    <string name="not_started">Not Started</string>
+    <string name="upcoming_deadlines_title">Upcoming Deadlines</string>
+    <string name="due_today">Due today</string>
+    <string name="due_tomorrow">Due tomorrow</string>
+    <string name="due_in_days">Due in %1$d days</string>
 
+    <!-- Schedule -->
     <string name="smart_schedule">Smart Schedule</string>
     <string name="day">Day</string>
     <string name="week">Week</string>
     <string name="previous_week">Previous Week</string>
     <string name="next_week">Next Week</string>
     <string name="regenerate_plan">Regenerate Today Plan</string>
-
     <string name="regenerate_plan_title">Regenerate Plan</string>
     <string name="generate_plan">Generate Plan</string>
     <string name="delete_plan_button">Delete Plan</string>
     <string name="back_to_schedule">Back to Schedule</string>
-
-    <string name="task_location">Task Location</string>
-    <string name="my_location">My Location</string>
-    <string name="open_location">Open Location</string>
-
     <string name="view_details">View Details</string>
     <string name="edit_plan">Edit Plan</string>
     <string name="delete_plan">Delete Plan</string>
+    <string name="delete_plan_title">Delete Plan</string>
+    <string name="delete_plan_message">Delete the plan at %1$s?</string>
     <string name="plan_saved">Plan saved successfully</string>
-    <string name="plan_deleted">Plan deleted successfully</string>
-
+    <string name="plan_deleted">Plan deleted</string>
     <string name="no_schedule">No plans for this day</string>
     <string name="create_schedule">Tap Regenerate Today Plan to create your first schedule</string>
+    <string name="no_plans_day">No plans for this day</string>
+    <string name="first_schedule_message">Tap Regenerate Today\'s Plan to create your first schedule.</string>
+    <string name="morning_study_session">Morning Study Session</string>
+    <string name="personal_study">Personal Study</string>
+    <string name="priority_one">Priority 1</string>
+    <string name="priority_two">Priority 2</string>
+    <string name="break_free_time">Break / Free Time</string>
+    <string name="personal_schedule">Personal Schedule</string>
+    <string name="no_fixed_task">No fixed task</string>
+    <string name="revision">Revision</string>
+    <string name="general_study">General Study</string>
+    <string name="lecture_external_study">Lecture / External Study</string>
+    <string name="custom_activity">Custom Activity</string>
+    <string name="zoom_library_practice">Zoom / Library / Practice</string>
+    <string name="custom_schedule">Custom Schedule</string>
+    <string name="weekly_view">Weekly View</string>
+    <string name="no_custom_plans">No Custom Plans</string>
+    <string name="tap_day_create_plan">Tap a day and create a plan</string>
+    <string name="time_label">Time</string>
+    <string name="type_label">Type</string>
+    <string name="duration_label">Duration</string>
+    <string name="lat_lon_label">Lat/Lon</string>
+    <string name="ok_button">OK</string>
+    <string name="previous_week_arrow">← Previous Week</string>
+    <string name="next_week_arrow">Next Week →</string>
+    <string name="regenerate_today_plan">Regenerate Today\'s Plan</string>
+    <string name="sun">SUN</string>
+    <string name="mon">MON</string>
+    <string name="tue">TUE</string>
+    <string name="wed">WED</string>
+    <string name="thu">THU</string>
+    <string name="fri">FRI</string>
+    <string name="sat">SAT</string>
+    <!-- Regenerate Schedule -->
+    <string name="complete_plan_required_fields">Please complete plan name, study hours and start time</string>
+    <string name="break_revision">Break / Revision</string>
+    <string name="not_added">Not Added</string>
+    <string name="plan_saved_successfully">Plan saved successfully</string>
+    <string name="enter_start_time_delete">Enter start time to delete a plan</string>
+    <string name="plan_deleted_simple">Plan deleted</string>
+    <string name="plan_name_label">Plan Name: %1$s</string>
+    <string name="start_time_label">Start Time: %1$s</string>
+    <string name="study_duration_label">Study Duration: %1$s hour(s)</string>
+    <string name="activity_label">Activity:</string>
+    <string name="location_label">Location: %1$s</string>
+    <string name="latitude_label">Latitude: %1$s</string>
+    <string name="longitude_label">Longitude: %1$s</string>
+    <string name="plan_name_hint">Plan name e.g. Exam Preparation Day</string>
+    <string name="study_hours_hint">Available study hours e.g. 4</string>
+    <string name="start_time_hint">Start time e.g. 9:00 AM</string>
+    <string name="extra_activity_hint">External activity e.g. Work, Zoom lecture</string>
+    <string name="location_name_hint">Location name e.g. CQU Sydney Library</string>
+    <string name="latitude_example_hint">Latitude e.g. -33.8688</string>
+    <string name="longitude_example_hint">Longitude e.g. 151.2093</string>
+    <string name="save_generate_plan">Save / Generate Plan</string>
+    <string name="generated_plan_placeholder">Your generated plan will appear here.</string>
 
+    <!-- Maps -->
+    <string name="task_location">Task Location</string>
+    <string name="my_location">My Location</string>
+    <string name="open_location">Open Location</string>
+    <string name="location_missing_message">Location is not available for this task</string>
+    <string name="task_location_not_available">Task location not available.</string>
+    <string name="my_current_location">My Current Location</string>
+    <string name="current_location_not_available">Current location not available. Try again.</string>
+    <string name="unable_get_location">Unable to get current location.</string>
+    <string name="location_permission_denied">Location permission denied.</string>
+    <string name="invalid_task_location">Task location is not available</string>
+    <string name="back_arrow">←</string>
+    <string name="my_location_button">📍 My Location</string>
+    <string name="task_location_button">🎯 Task Location</string>
+
+    <!-- Logout -->
     <string name="logout">Logout</string>
+    <string name="logout_title">Logout</string>
+    <string name="logout_message">Are you sure you want to logout?</string>
+    <string name="logout_confirm_message">Are you sure you want to logout?</string>
+    <string name="logout_button">Logout</string>
 </resources>

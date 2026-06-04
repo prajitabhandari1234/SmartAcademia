@@ -14,7 +14,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Smart Schedule"
+            android:text="@string/smart_schedule"
             android:textColor="#0B5FA5"
             android:textSize="30sp"
             android:textStyle="bold" />
@@ -29,30 +29,33 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="44dp"
+            android:layout_height="56dp"
             android:orientation="horizontal"
             android:layout_marginTop="14dp">
 
             <Button
                 android:id="@+id/dayButton"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="56dp"
                 android:layout_weight="1"
-                android:text="Day" />
+                android:text="@string/day"
+                android:textColor="#FFFFFF" />
 
             <Button
                 android:id="@+id/weekButton"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="56dp"
                 android:layout_weight="1"
-                android:text="Week" />
+                android:text="@string/week"
+                android:textColor="#FFFFFF" />
         </LinearLayout>
 
         <Button
             android:id="@+id/previousWeekButton"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="← Previous Week"
+            android:layout_height="56dp"
+            android:text="@string/previous_week_arrow"
+            android:textColor="#FFFFFF"
             android:layout_marginTop="12dp" />
 
         <TextView
@@ -68,8 +71,9 @@
         <Button
             android:id="@+id/nextWeekButton"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Next Week →"
+            android:layout_height="56dp"
+            android:text="@string/next_week_arrow"
+            android:textColor="#FFFFFF"
             android:layout_marginTop="8dp" />
 
         <LinearLayout
@@ -87,7 +91,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="SUN"
+                android:text="@string/sun"
                 android:textStyle="bold" />
 
             <TextView
@@ -96,7 +100,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="MON"
+                android:text="@string/mon"
                 android:textStyle="bold" />
 
             <TextView
@@ -105,7 +109,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="TUE"
+                android:text="@string/tue"
                 android:textStyle="bold" />
 
             <TextView
@@ -114,7 +118,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="WED"
+                android:text="@string/wed"
                 android:textStyle="bold" />
 
             <TextView
@@ -123,7 +127,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="THU"
+                android:text="@string/thu"
                 android:textStyle="bold" />
 
             <TextView
@@ -132,7 +136,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="FRI"
+                android:text="@string/fri"
                 android:textStyle="bold" />
 
             <TextView
@@ -141,7 +145,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="SAT"
+                android:text="@string/sat"
                 android:textStyle="bold" />
         </LinearLayout>
 
@@ -156,7 +160,8 @@
             android:id="@+id/regenerateButton"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:text="Regenerate Today's Plan"
+            android:text="@string/regenerate_today_plan"
+            android:textColor="#FFFFFF"
             android:textSize="16sp"
             android:layout_marginTop="18dp" />
 

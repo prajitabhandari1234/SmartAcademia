@@ -2,48 +2,117 @@ package au.edu.cqu.smartacademia.database
 
 import androidx.lifecycle.LiveData
 import au.edu.cqu.smartacademia.network.RetrofitInstance
+import au.edu.cqu.smartacademia.utils.ScheduleGenerator
 
+/**
+ * Repository responsible for managing task data.
+ *
+ * Acts as a bridge between the ViewModel and the Room database.
+ *
+ * Responsibilities:
+ * - Retrieve task data from Room.
+ * - Insert, update and delete tasks.
+ * - Load seed data when the database is empty.
+ * - Fetch task data from a remote JSON server.
+ * - Calculate task priority scores.
+ */
 class TaskRepository(private val taskDao: TaskDao) {
 
+    /**
+     * Returns all tasks belonging to a user.
+     *
+     * @param email User email.
+     * @return LiveData list of tasks.
+     */
     fun getTasksForUser(email: String): LiveData<List<Task>> {
         return taskDao.getTasksForUser(email)
     }
 
+    /**
+     * Returns active (incomplete) tasks.
+     *
+     * @param email User email.
+     * @return LiveData list of active tasks.
+     */
     fun getActiveTasks(email: String): LiveData<List<Task>> {
         return taskDao.getActiveTasks(email)
     }
 
+    /**
+     * Returns completed tasks.
+     *
+     * @param email User email.
+     * @return LiveData list of completed tasks.
+     */
     fun getCompletedTasks(email: String): LiveData<List<Task>> {
         return taskDao.getCompletedTasks(email)
     }
 
+    /**
+     * Inserts a task after calculating its priority score.
+     *
+     * @param task Task to insert.
+     */
     suspend fun insertTask(task: Task) {
-        task.priorityScore = au.edu.cqu.smartacademia.utils.ScheduleGenerator.calculatePriorityScore(task)
+        task.priorityScore = ScheduleGenerator.calculatePriorityScore(task)
         taskDao.insertTask(task)
     }
 
+    /**
+     * Inserts multiple tasks after calculating
+     * priority scores for each task.
+     *
+     * @param tasks List of tasks.
+     */
     suspend fun insertTasks(tasks: List<Task>) {
         tasks.forEach {
-            it.priorityScore = au.edu.cqu.smartacademia.utils.ScheduleGenerator.calculatePriorityScore(it)
+            it.priorityScore = ScheduleGenerator.calculatePriorityScore(it)
         }
         taskDao.insertTasks(tasks)
     }
 
+    /**
+     * Updates an existing task.
+     *
+     * @param task Updated task.
+     */
     suspend fun updateTask(task: Task) {
         taskDao.updateTask(task)
     }
 
+    /**
+     * Retrieves a task using its ID.
+     *
+     * @param taskId Task identifier.
+     * @return Matching task or null.
+     */
     suspend fun getTaskById(taskId: String): Task? {
         return taskDao.getTaskById(taskId)
     }
 
+    /**
+     * Deletes a task using its ID.
+     *
+     * @param taskId Task identifier.
+     */
     suspend fun deleteTaskById(taskId: String) {
         taskDao.deleteTaskById(taskId)
     }
 
+    /**
+     * Loads sample seed data when the database is empty.
+     *
+     * This ensures the application contains initial
+     * data when first launched.
+     *
+     * @param userEmail Logged-in user email.
+     */
     suspend fun loadSeedDataIfEmpty(userEmail: String) {
+
         if (taskDao.getTaskCount() == 0) {
+
             val seedTasks = listOf(
+
                 Task(
                     userEmail = userEmail,
                     title = "Assignment 2 Portfolio",
@@ -56,6 +125,7 @@ class TaskRepository(private val taskDao: TaskDao) {
                     lat = -33.8688,
                     lon = 151.2093
                 ),
+
                 Task(
                     userEmail = userEmail,
                     title = "Assignment 3 Final Project",
@@ -68,6 +138,7 @@ class TaskRepository(private val taskDao: TaskDao) {
                     lat = -33.8858,
                     lon = 151.2073
                 ),
+
                 Task(
                     userEmail = userEmail,
                     title = "Weekly Quiz",
@@ -85,17 +156,32 @@ class TaskRepository(private val taskDao: TaskDao) {
             taskDao.insertTasks(seedTasks)
         }
     }
+
+    /**
+     * Fetches tasks from a remote JSON API.
+     *
+     * New tasks are inserted into the Room database.
+     * Existing tasks are ignored to prevent duplicates.
+     *
+     * @param userEmail Logged-in user email.
+     */
     suspend fun fetchTasksFromApi(userEmail: String) {
+
         try {
+
             val response = RetrofitInstance.api.getTasks()
 
             if (response.isSuccessful) {
+
                 val apiTasks = response.body() ?: emptyList()
 
                 apiTasks.forEach { apiTask ->
 
                     val existingTask =
-                        taskDao.getTaskByTitle(apiTask.title, userEmail)
+                        taskDao.getTaskByTitle(
+                            apiTask.title,
+                            userEmail
+                        )
 
                     if (existingTask == null) {
 
@@ -112,13 +198,15 @@ class TaskRepository(private val taskDao: TaskDao) {
                         )
 
                         task.priorityScore =
-                            au.edu.cqu.smartacademia.utils.ScheduleGenerator.calculatePriorityScore(task)
+                            ScheduleGenerator.calculatePriorityScore(task)
 
                         taskDao.insertTask(task)
                     }
                 }
             }
+
         } catch (e: Exception) {
+
             e.printStackTrace()
         }
     }

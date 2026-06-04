@@ -4,8 +4,13 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.view.*
-import android.widget.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -17,7 +22,8 @@ import au.edu.cqu.smartacademia.viewmodel.TaskViewModel
 import org.json.JSONArray
 import org.json.JSONObject
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Locale
 
 data class ScheduleItem(
     val time: String,
@@ -28,6 +34,12 @@ data class ScheduleItem(
     val isCustom: Boolean = false
 )
 
+/**
+ * Schedule screen for SmartAcademia.
+ *
+ * Provides daily and weekly study planning, custom schedule creation,
+ * schedule editing, deletion and smart task prioritisation.
+ */
 class ScheduleFragment : Fragment() {
 
     private lateinit var taskViewModel: TaskViewModel
@@ -49,7 +61,14 @@ class ScheduleFragment : Fragment() {
     private val selectedDate = Calendar.getInstance()
     private val weekStartDate = Calendar.getInstance()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    /**
+     * Creates and initialises the Schedule screen.
+     */
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val view = inflater.inflate(R.layout.fragment_schedule, container, false)
 
         timelineLayout = view.findViewById(R.id.timelineLayout)
@@ -76,10 +95,10 @@ class ScheduleFragment : Fragment() {
 
         setStartOfWeek()
         updateDateHeaders()
-
         setupDayClicks()
 
         taskViewModel = ViewModelProvider(this)[TaskViewModel::class.java]
+
         taskViewModel.getTasksForUser(userEmail).observe(viewLifecycleOwner) { tasks ->
             latestTasks = tasks.filter { !it.completed }
             generateDayPlan()
@@ -114,20 +133,31 @@ class ScheduleFragment : Fragment() {
         return view
     }
 
+    /**
+     * Refreshes the schedule when returning from the editor screen.
+     */
     override fun onResume() {
         super.onResume()
+
         if (::timelineLayout.isInitialized) {
             generateDayPlan()
         }
     }
 
+    /**
+     * Sets the week calendar to Sunday.
+     */
     private fun setStartOfWeek() {
         weekStartDate.time = selectedDate.time
+
         while (weekStartDate.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
             weekStartDate.add(Calendar.DAY_OF_MONTH, -1)
         }
     }
 
+    /**
+     * Updates date labels and highlights the selected day.
+     */
     private fun updateDateHeaders() {
         val fullFormat = SimpleDateFormat("EEEE, d MMMM yyyy", Locale.getDefault())
         val shortFormat = SimpleDateFormat("EEE\nd MMM", Locale.getDefault())
@@ -141,7 +171,15 @@ class ScheduleFragment : Fragment() {
         weekRangeTextView.text =
             "${rangeFormat.format(weekStartDate.time)} - ${rangeFormat.format(endWeek.time)}"
 
-        val dayViews = listOf(sunTextView, monTextView, tueTextView, wedTextView, thuTextView, friTextView, satTextView)
+        val dayViews = listOf(
+            sunTextView,
+            monTextView,
+            tueTextView,
+            wedTextView,
+            thuTextView,
+            friTextView,
+            satTextView
+        )
 
         for (i in dayViews.indices) {
             val day = weekStartDate.clone() as Calendar
@@ -158,32 +196,59 @@ class ScheduleFragment : Fragment() {
         }
     }
 
+    /**
+     * Adds click listeners to week day labels.
+     */
     private fun setupDayClicks() {
-        val dayViews = listOf(sunTextView, monTextView, tueTextView, wedTextView, thuTextView, friTextView, satTextView)
+        val dayViews = listOf(
+            sunTextView,
+            monTextView,
+            tueTextView,
+            wedTextView,
+            thuTextView,
+            friTextView,
+            satTextView
+        )
 
         dayViews.forEachIndexed { index, textView ->
             textView.setOnClickListener {
                 selectedDate.time = weekStartDate.time
                 selectedDate.add(Calendar.DAY_OF_MONTH, index)
+
                 updateDateHeaders()
                 generateDayPlan()
             }
         }
     }
 
+    /**
+     * Opens the regenerate schedule page.
+     *
+     * @param editingStartTime start time used when editing an existing plan.
+     */
     private fun openRegeneratePage(editingStartTime: String? = null) {
         val intent = Intent(requireContext(), RegenerateScheduleActivity::class.java)
+
         intent.putExtra("selected_date_key", getSelectedDateKey())
+
         editingStartTime?.let {
             intent.putExtra("editing_start_time", it)
         }
+
         startActivity(intent)
     }
 
+    /**
+     * Returns the selected date key in yyyy-MM-dd format.
+     */
     private fun getSelectedDateKey(): String {
-        return SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(selectedDate.time)
+        return SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            .format(selectedDate.time)
     }
 
+    /**
+     * Loads custom plans for the selected date.
+     */
     private fun loadPlansForSelectedDate(): JSONArray {
         val text = requireActivity()
             .getSharedPreferences("smartacademia_schedule", Context.MODE_PRIVATE)
@@ -192,6 +257,9 @@ class ScheduleFragment : Fragment() {
         return JSONArray(text)
     }
 
+    /**
+     * Saves custom plans for the selected date.
+     */
     private fun savePlansForSelectedDate(plans: JSONArray) {
         requireActivity()
             .getSharedPreferences("smartacademia_schedule", Context.MODE_PRIVATE)
@@ -200,19 +268,24 @@ class ScheduleFragment : Fragment() {
             .apply()
     }
 
+    /**
+     * Generates the daily schedule.
+     */
     private fun generateDayPlan() {
         timelineLayout.removeAllViews()
 
         val scheduleItems = mutableListOf<ScheduleItem>()
 
         val customPlans = loadPlansForSelectedDate()
+
         for (i in 0 until customPlans.length()) {
             val plan = customPlans.getJSONObject(i)
+
             scheduleItems.add(
                 ScheduleItem(
                     time = plan.getString("startTime"),
                     title = plan.getString("planName"),
-                    course = "Custom Schedule",
+                    course = getString(R.string.custom_schedule),
                     detail = formatPlanDetails(plan),
                     color = "#BDE7FF",
                     isCustom = true
@@ -230,9 +303,9 @@ class ScheduleFragment : Fragment() {
         scheduleItems.add(
             ScheduleItem(
                 time = "9:00 AM",
-                title = firstTask?.title ?: "Morning Study Session",
-                course = firstTask?.course ?: "Personal Study",
-                detail = "${firstTask?.estimatedHours ?: 2} hrs • Priority 1",
+                title = firstTask?.title ?: getString(R.string.morning_study_session),
+                course = firstTask?.course ?: getString(R.string.personal_study),
+                detail = "${firstTask?.estimatedHours ?: 2} hrs • ${getString(R.string.priority_one)}",
                 color = "#F4A6B8"
             )
         )
@@ -240,9 +313,9 @@ class ScheduleFragment : Fragment() {
         scheduleItems.add(
             ScheduleItem(
                 time = "11:00 AM",
-                title = "Break / Free Time",
-                course = "Personal Schedule",
-                detail = "No fixed task",
+                title = getString(R.string.break_free_time),
+                course = getString(R.string.personal_schedule),
+                detail = getString(R.string.no_fixed_task),
                 color = "#CFCFD6"
             )
         )
@@ -250,9 +323,9 @@ class ScheduleFragment : Fragment() {
         scheduleItems.add(
             ScheduleItem(
                 time = "12:00 PM",
-                title = secondTask?.title ?: "Revision",
-                course = secondTask?.course ?: "General Study",
-                detail = "${secondTask?.estimatedHours ?: 2} hrs • Priority 2",
+                title = secondTask?.title ?: getString(R.string.revision),
+                course = secondTask?.course ?: getString(R.string.general_study),
+                detail = "${secondTask?.estimatedHours ?: 2} hrs • ${getString(R.string.priority_two)}",
                 color = "#F4CDBB"
             )
         )
@@ -260,9 +333,9 @@ class ScheduleFragment : Fragment() {
         scheduleItems.add(
             ScheduleItem(
                 time = "3:00 PM",
-                title = "Lecture / External Study",
-                course = "Custom Activity",
-                detail = "Zoom / Library / Practice",
+                title = getString(R.string.lecture_external_study),
+                course = getString(R.string.custom_activity),
+                detail = getString(R.string.zoom_library_practice),
                 color = "#F4CDBB"
             )
         )
@@ -285,6 +358,9 @@ class ScheduleFragment : Fragment() {
         }
     }
 
+    /**
+     * Generates the weekly schedule overview.
+     */
     private fun generateWeekPlan() {
         timelineLayout.removeAllViews()
 
@@ -292,8 +368,11 @@ class ScheduleFragment : Fragment() {
             val day = weekStartDate.clone() as Calendar
             day.add(Calendar.DAY_OF_MONTH, i)
 
-            val key = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(day.time)
-            val label = SimpleDateFormat("EEE d MMM", Locale.getDefault()).format(day.time)
+            val key = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                .format(day.time)
+
+            val label = SimpleDateFormat("EEE d MMM", Locale.getDefault())
+                .format(day.time)
 
             val plansText = requireActivity()
                 .getSharedPreferences("smartacademia_schedule", Context.MODE_PRIVATE)
@@ -305,20 +384,21 @@ class ScheduleFragment : Fragment() {
                 addScheduleBlock(
                     ScheduleItem(
                         time = label,
-                        title = "No Custom Plans",
-                        course = "Weekly View",
-                        detail = "Tap a day and create a plan",
+                        title = getString(R.string.no_custom_plans),
+                        course = getString(R.string.weekly_view),
+                        detail = getString(R.string.tap_day_create_plan),
                         color = "#CFCFD6"
                     )
                 )
             } else {
                 for (j in 0 until plans.length()) {
                     val plan = plans.getJSONObject(j)
+
                     addScheduleBlock(
                         ScheduleItem(
                             time = label,
                             title = "${plan.getString("startTime")} - ${plan.getString("planName")}",
-                            course = "Custom Schedule",
+                            course = getString(R.string.custom_schedule),
                             detail = formatPlanDetails(plan),
                             color = "#BDE7FF",
                             isCustom = true
@@ -329,6 +409,9 @@ class ScheduleFragment : Fragment() {
         }
     }
 
+    /**
+     * Adds a schedule item block to the timeline.
+     */
     private fun addScheduleBlock(item: ScheduleItem) {
         val row = LinearLayout(requireContext())
         row.orientation = LinearLayout.HORIZONTAL
@@ -368,20 +451,30 @@ class ScheduleFragment : Fragment() {
         timelineLayout.addView(row)
     }
 
+    /**
+     * Shows schedule item details.
+     */
     private fun showDetailsDialog(item: ScheduleItem) {
         AlertDialog.Builder(requireContext())
             .setTitle(item.title)
             .setMessage(
-                "Time: ${item.time}\n\n" +
-                        "Type: ${item.course}\n\n" +
+                "${getString(R.string.time_label)}: ${item.time}\n\n" +
+                        "${getString(R.string.type_label)}: ${item.course}\n\n" +
                         item.detail
             )
-            .setPositiveButton("OK", null)
+            .setPositiveButton(getString(R.string.ok_button), null)
             .show()
     }
 
+    /**
+     * Shows actions for custom plans.
+     */
     private fun showPlanActionsDialog(item: ScheduleItem) {
-        val options = arrayOf("View Details", "Edit Plan", "Delete Plan")
+        val options = arrayOf(
+            getString(R.string.view_details),
+            getString(R.string.edit_plan),
+            getString(R.string.delete_plan)
+        )
 
         AlertDialog.Builder(requireContext())
             .setTitle(item.title)
@@ -395,16 +488,20 @@ class ScheduleFragment : Fragment() {
             .show()
     }
 
+    /**
+     * Deletes a selected custom plan.
+     */
     private fun deletePlan(startTime: String) {
         AlertDialog.Builder(requireContext())
-            .setTitle("Delete Plan")
-            .setMessage("Delete the plan at $startTime?")
-            .setPositiveButton("Delete") { _, _ ->
+            .setTitle(getString(R.string.delete_plan_title))
+            .setMessage(getString(R.string.delete_plan_message, startTime))
+            .setPositiveButton(getString(R.string.delete_button)) { _, _ ->
                 val oldPlans = loadPlansForSelectedDate()
                 val updatedPlans = JSONArray()
 
                 for (i in 0 until oldPlans.length()) {
                     val plan = oldPlans.getJSONObject(i)
+
                     if (normalizeTime(plan.getString("startTime")) != normalizeTime(startTime)) {
                         updatedPlans.put(plan)
                     }
@@ -412,45 +509,67 @@ class ScheduleFragment : Fragment() {
 
                 savePlansForSelectedDate(updatedPlans)
                 generateDayPlan()
-                Toast.makeText(requireContext(), "Plan deleted", Toast.LENGTH_SHORT).show()
+
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.plan_deleted),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
-            .setNegativeButton("Cancel", null)
+            .setNegativeButton(getString(R.string.cancel_button), null)
             .show()
     }
 
+    /**
+     * Displays an empty schedule message.
+     */
     private fun addEmptyState() {
         addScheduleBlock(
             ScheduleItem(
                 time = "",
-                title = "No plans for this day",
-                course = "Smart Schedule",
-                detail = "Tap Regenerate Today's Plan to create your first schedule.",
+                title = getString(R.string.no_plans_day),
+                course = getString(R.string.smart_schedule),
+                detail = getString(R.string.first_schedule_message),
                 color = "#CFCFD6"
             )
         )
     }
 
+    /**
+     * Formats custom plan details for display.
+     */
     private fun formatPlanDetails(plan: JSONObject): String {
-        return "Duration: ${plan.getString("hours")} hr(s)\n" +
-                "Activity: ${plan.getString("activity")}\n" +
-                "Location: ${plan.getString("locationName")}\n" +
-                "Lat/Lon: ${plan.getString("latitude")}, ${plan.getString("longitude")}"
+        return "${getString(R.string.duration_label)}: ${plan.getString("hours")} hr(s)\n" +
+                "${getString(R.string.activity_label)}: ${plan.getString("activity")}\n" +
+                "${getString(R.string.location_label)}: ${plan.getString("locationName")}\n" +
+                "${getString(R.string.lat_lon_label)}: ${plan.getString("latitude")}, ${plan.getString("longitude")}"
     }
 
+    /**
+     * Checks whether two calendar dates are the same.
+     */
     private fun isSameDate(a: Calendar, b: Calendar): Boolean {
-        return a.get(Calendar.YEAR) == b.get(Calendar.YEAR)
-                && a.get(Calendar.DAY_OF_YEAR) == b.get(Calendar.DAY_OF_YEAR)
+        return a.get(Calendar.YEAR) == b.get(Calendar.YEAR) &&
+                a.get(Calendar.DAY_OF_YEAR) == b.get(Calendar.DAY_OF_YEAR)
     }
 
+    /**
+     * Standardises time strings for comparison.
+     */
     private fun normalizeTime(time: String): String {
-        return time.trim().uppercase(Locale.getDefault())
+        return time.trim()
+            .uppercase(Locale.getDefault())
             .replace("  ", " ")
     }
 
+    /**
+     * Converts a time string into minutes for chronological sorting.
+     */
     private fun convertTimeToMinutes(time: String): Int {
         return try {
             val parts = normalizeTime(time).split(" ")
             val hourMinute = parts[0].split(":")
+
             var hour = hourMinute[0].toInt()
             val minute = hourMinute.getOrNull(1)?.toIntOrNull() ?: 0
             val amPm = parts.getOrNull(1) ?: "AM"

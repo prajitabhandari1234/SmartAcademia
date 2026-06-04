@@ -14,7 +14,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Regenerate Plan"
+            android:text="@string/regenerate_plan_title"
             android:textColor="#0B5FA5"
             android:textSize="28sp"
             android:textStyle="bold" />
@@ -22,85 +22,114 @@
         <EditText
             android:id="@+id/planNameEditText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Plan name e.g. Exam Preparation Day"
-            android:layout_marginTop="20dp" />
+            android:layout_height="56dp"
+            android:layout_marginTop="20dp"
+            android:autofillHints="name"
+            android:hint="@string/plan_name_hint"
+            android:inputType="textCapWords"
+            android:textColor="#1F2933"
+            android:textColorHint="#5F6B76" />
 
         <EditText
             android:id="@+id/studyHoursEditText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Available study hours e.g. 4"
+            android:layout_height="56dp"
+            android:layout_marginTop="12dp"
+            android:autofillHints="none"
+            android:hint="@string/study_hours_hint"
             android:inputType="number"
-            android:layout_marginTop="12dp" />
+            android:textColor="#1F2933"
+            android:textColorHint="#5F6B76" />
 
         <EditText
             android:id="@+id/startTimeEditText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Start time e.g. 9:00 AM"
-            android:layout_marginTop="12dp" />
+            android:layout_height="56dp"
+            android:layout_marginTop="12dp"
+            android:autofillHints="none"
+            android:hint="@string/start_time_hint"
+            android:inputType="text"
+            android:textColor="#1F2933"
+            android:textColorHint="#5F6B76" />
 
         <EditText
             android:id="@+id/extraActivityEditText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="External activity e.g. Work, Zoom lecture"
-            android:layout_marginTop="12dp" />
+            android:layout_height="56dp"
+            android:layout_marginTop="12dp"
+            android:autofillHints="none"
+            android:hint="@string/extra_activity_hint"
+            android:inputType="textCapSentences"
+            android:textColor="#1F2933"
+            android:textColorHint="#5F6B76" />
 
         <EditText
             android:id="@+id/locationNameEditText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Location name e.g. CQU Sydney Library"
-            android:layout_marginTop="12dp" />
+            android:layout_height="56dp"
+            android:layout_marginTop="12dp"
+            android:autofillHints="postalAddress"
+            android:hint="@string/location_name_hint"
+            android:inputType="textCapWords"
+            android:textColor="#1F2933"
+            android:textColorHint="#5F6B76" />
 
         <EditText
             android:id="@+id/latitudeEditText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Latitude e.g. -33.8688"
+            android:layout_height="56dp"
+            android:layout_marginTop="12dp"
+            android:autofillHints="none"
+            android:hint="@string/latitude_example_hint"
             android:inputType="numberDecimal|numberSigned"
-            android:layout_marginTop="12dp" />
+            android:textColor="#1F2933"
+            android:textColorHint="#5F6B76" />
 
         <EditText
             android:id="@+id/longitudeEditText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Longitude e.g. 151.2093"
+            android:layout_height="56dp"
+            android:layout_marginTop="12dp"
+            android:autofillHints="none"
+            android:hint="@string/longitude_example_hint"
             android:inputType="numberDecimal|numberSigned"
-            android:layout_marginTop="12dp" />
+            android:textColor="#1F2933"
+            android:textColorHint="#5F6B76" />
 
         <Button
             android:id="@+id/generateButton"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Save / Generate Plan"
-            android:layout_marginTop="20dp" />
+            android:layout_height="56dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/save_generate_plan"
+            android:textColor="#FFFFFF" />
 
         <Button
             android:id="@+id/deletePlanButton"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Delete Plan"
-            android:layout_marginTop="12dp" />
+            android:layout_height="56dp"
+            android:layout_marginTop="12dp"
+            android:text="@string/delete_plan"
+            android:textColor="#FFFFFF" />
 
         <TextView
             android:id="@+id/generatedPlanTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:background="#A9CBE8"
             android:padding="16dp"
-            android:text="Your generated plan will appear here."
-            android:textSize="16sp"
-            android:layout_marginTop="20dp" />
+            android:text="@string/generated_plan_placeholder"
+            android:textColor="#1F2933"
+            android:textSize="16sp" />
 
         <Button
             android:id="@+id/backButton"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Back to Schedule"
-            android:layout_marginTop="20dp" />
+            android:layout_height="56dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/back_to_schedule"
+            android:textColor="#FFFFFF" />
 
     </LinearLayout>
 </ScrollView>

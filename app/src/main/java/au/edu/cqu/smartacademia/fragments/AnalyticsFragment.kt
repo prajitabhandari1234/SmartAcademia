@@ -28,6 +28,15 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
+/**
+ * Analytics screen for SmartAcademia.
+ *
+ * Displays task statistics, progress charts,
+ * study workload, productivity score and upcoming deadlines.
+ *
+ * This fragment uses ViewModel and LiveData so that analytics
+ * update automatically when task data changes.
+ */
 class AnalyticsFragment : Fragment() {
 
     private lateinit var taskViewModel: TaskViewModel
@@ -55,6 +64,7 @@ class AnalyticsFragment : Fragment() {
 
         val previousAnalyticsWeekButton =
             view.findViewById<Button>(R.id.previousAnalyticsWeekButton)
+
         val nextAnalyticsWeekButton =
             view.findViewById<Button>(R.id.nextAnalyticsWeekButton)
 
@@ -103,6 +113,14 @@ class AnalyticsFragment : Fragment() {
         return view
     }
 
+    /**
+     * Calculates and displays task analytics.
+     *
+     * Updates statistic cards, progress chart,
+     * weekly chart and upcoming deadline summary.
+     *
+     * @param tasks Current list of user tasks.
+     */
     private fun updateAnalytics(
         tasks: List<Task>,
         onTimeRateTextView: TextView,
@@ -119,6 +137,7 @@ class AnalyticsFragment : Fragment() {
         val totalTasks = tasks.size
         val completedTasks = tasks.count { it.completed }
         val overdueTasks = ScheduleGenerator.countOverdue(tasks)
+
         val upcomingTasks = tasks.count {
             !it.completed && ScheduleGenerator.calculateDaysRemaining(it.deadline) >= 0
         }
@@ -148,12 +167,23 @@ class AnalyticsFragment : Fragment() {
             .filter { !it.completed }
             .sumOf { it.estimatedHours }
 
-        onTimeRateTextView.text = "$onTimeRate%\nOn-time\nRate"
-        taskDoneTextView.text = "$completedTasks\nTask Done"
-        overdueTextView.text = "$overdueTasks\nOverdue"
-        upcomingTextView.text = "$upcomingTasks\nUpcoming"
-        productivityTextView.text = "$productivityScore%\nProductivity"
-        studyHoursTextView.text = "$totalStudyHours hrs\nStudy Load"
+        onTimeRateTextView.text =
+            "$onTimeRate%\n${getString(R.string.on_time_rate_label)}"
+
+        taskDoneTextView.text =
+            "$completedTasks\n${getString(R.string.task_done_label)}"
+
+        overdueTextView.text =
+            "$overdueTasks\n${getString(R.string.overdue_label)}"
+
+        upcomingTextView.text =
+            "$upcomingTasks\n${getString(R.string.upcoming_label)}"
+
+        productivityTextView.text =
+            "$productivityScore%\n${getString(R.string.productivity_label)}"
+
+        studyHoursTextView.text =
+            "$totalStudyHours hrs\n${getString(R.string.study_load_label)}"
 
         setupPieChart(
             pieChart,
@@ -167,6 +197,13 @@ class AnalyticsFragment : Fragment() {
         upcomingDeadlineTextView.text = generateUpcomingDeadlineText(tasks)
     }
 
+    /**
+     * Configures the progress pie chart.
+     *
+     * @param completedPercent Percentage of completed tasks.
+     * @param inProgressPercent Percentage of active tasks.
+     * @param notStartedPercent Percentage of not-started tasks.
+     */
     private fun setupPieChart(
         pieChart: PieChart,
         completedPercent: Int,
@@ -174,9 +211,27 @@ class AnalyticsFragment : Fragment() {
         notStartedPercent: Int
     ) {
         val entries = ArrayList<PieEntry>()
-        entries.add(PieEntry(completedPercent.toFloat(), "Completed"))
-        entries.add(PieEntry(inProgressPercent.toFloat(), "In Progress"))
-        entries.add(PieEntry(notStartedPercent.toFloat(), "Not Started"))
+
+        entries.add(
+            PieEntry(
+                completedPercent.toFloat(),
+                getString(R.string.completed)
+            )
+        )
+
+        entries.add(
+            PieEntry(
+                inProgressPercent.toFloat(),
+                "In Progress"
+            )
+        )
+
+        entries.add(
+            PieEntry(
+                notStartedPercent.toFloat(),
+                "Not Started"
+            )
+        )
 
         val dataSet = PieDataSet(entries, "")
         dataSet.colors = listOf(
@@ -184,26 +239,35 @@ class AnalyticsFragment : Fragment() {
             Color.rgb(155, 196, 230),
             Color.rgb(220, 230, 240)
         )
+
         dataSet.valueTextColor = Color.rgb(11, 95, 165)
         dataSet.valueTextSize = 12f
 
-        val data = PieData(dataSet)
-
-        pieChart.data = data
+        pieChart.data = PieData(dataSet)
         pieChart.description.isEnabled = false
-        pieChart.centerText = "Progress"
+        pieChart.centerText = getString(R.string.progress_chart_title)
         pieChart.setCenterTextSize(16f)
         pieChart.setHoleColor(Color.TRANSPARENT)
         pieChart.legend.isEnabled = true
         pieChart.invalidate()
     }
 
+    /**
+     * Sets the analytics calendar to the beginning
+     * of the current week.
+     */
     private fun setStartOfWeek() {
         while (chartWeekStart.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
             chartWeekStart.add(Calendar.DAY_OF_MONTH, -1)
         }
     }
 
+    /**
+     * Generates the weekly bar chart for the selected week.
+     *
+     * @param barChart Bar chart view.
+     * @param analyticsWeekRangeTextView TextView that displays the selected week range.
+     */
     private fun setupBarChart(
         barChart: BarChart,
         analyticsWeekRangeTextView: TextView
@@ -230,7 +294,11 @@ class AnalyticsFragment : Fragment() {
             entries.add(BarEntry(i.toFloat(), value.toFloat()))
         }
 
-        val dataSet = BarDataSet(entries, "Tasks Completed")
+        val dataSet = BarDataSet(
+            entries,
+            getString(R.string.tasks_completed_chart)
+        )
+
         dataSet.color = Color.rgb(47, 128, 199)
         dataSet.valueTextColor = Color.rgb(11, 95, 165)
         dataSet.valueTextSize = 11f
@@ -255,6 +323,15 @@ class AnalyticsFragment : Fragment() {
         barChart.invalidate()
     }
 
+    /**
+     * Returns weekly chart values.
+     *
+     * These values are currently sample values used
+     * for visualising the weekly analytics chart.
+     *
+     * @param index Day index of the week.
+     * @return Number of completed tasks.
+     */
     private fun getDemoWeeklyValue(index: Int): Int {
         return when (index) {
             0 -> 2
@@ -266,25 +343,40 @@ class AnalyticsFragment : Fragment() {
         }
     }
 
+    /**
+     * Generates a summary of the nearest upcoming deadlines.
+     *
+     * @param tasks Current list of user tasks.
+     * @return Formatted upcoming deadline text.
+     */
     private fun generateUpcomingDeadlineText(tasks: List<Task>): String {
         val upcoming = tasks
-            .filter { !it.completed && ScheduleGenerator.calculateDaysRemaining(it.deadline) >= 0 }
-            .sortedBy { ScheduleGenerator.calculateDaysRemaining(it.deadline) }
+            .filter {
+                !it.completed &&
+                        ScheduleGenerator.calculateDaysRemaining(it.deadline) >= 0
+            }
+            .sortedBy {
+                ScheduleGenerator.calculateDaysRemaining(it.deadline)
+            }
             .take(3)
 
         if (upcoming.isEmpty()) {
-            return "Upcoming Deadlines\n\nNo upcoming deadlines."
+            return getString(R.string.upcoming_deadlines_title) +
+                    "\n\n" +
+                    getString(R.string.no_upcoming_deadlines)
         }
 
         val text = StringBuilder()
-        text.append("Upcoming Deadlines\n\n")
+        text.append(getString(R.string.upcoming_deadlines_title))
+        text.append("\n\n")
 
         upcoming.forEach { task ->
             val days = ScheduleGenerator.calculateDaysRemaining(task.deadline)
+
             val dueText = when (days) {
-                0L -> "Due today"
-                1L -> "Due tomorrow"
-                else -> "Due in $days days"
+                0L -> getString(R.string.due_today)
+                1L -> getString(R.string.due_tomorrow)
+                else -> getString(R.string.due_in_days, days.toInt())
             }
 
             text.append("• ${task.title}\n")

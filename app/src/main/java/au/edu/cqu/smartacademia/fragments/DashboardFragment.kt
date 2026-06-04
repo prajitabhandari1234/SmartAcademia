@@ -22,6 +22,12 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
+/**
+ * Dashboard fragment displayed as the home screen of SmartAcademia.
+ *
+ * Shows a personalised greeting, current date, task summary,
+ * study plan, upcoming deadlines, reminder control and logout option.
+ */
 class DashboardFragment : Fragment() {
 
     private lateinit var taskViewModel: TaskViewModel
@@ -83,28 +89,38 @@ class DashboardFragment : Fragment() {
         return view
     }
 
+    /**
+     * Updates the greeting and current date/time.
+     *
+     * Greeting changes based on the current time.
+     * The user's first name is read from the login session.
+     */
     private fun updateGreetingAndDate() {
         val calendar = Calendar.getInstance()
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
 
         val greeting = when {
-            hour < 12 -> "Good Morning"
-            hour < 17 -> "Good Afternoon"
-            else -> "Good Evening"
+            hour < 12 -> getString(R.string.good_morning)
+            hour < 17 -> getString(R.string.good_afternoon)
+            else -> getString(R.string.good_evening)
         }
 
         val sharedPreferences = requireActivity()
             .getSharedPreferences("smartacademia_session", Context.MODE_PRIVATE)
 
-        val fullName = sharedPreferences.getString("full_name", "Student") ?: "Student"
+        val fullName = sharedPreferences.getString(
+            "full_name",
+            getString(R.string.default_student)
+        ) ?: getString(R.string.default_student)
 
         val firstName = fullName
             .trim()
             .split(" ")
             .firstOrNull()
-            ?: "Student"
+            ?: getString(R.string.default_student)
 
-        greetingTextView.text = "$greeting, $firstName 👋"
+        greetingTextView.text =
+            getString(R.string.greeting_format, greeting, firstName)
 
         val dateFormat = SimpleDateFormat(
             "EEEE, d MMMM yyyy\nhh:mm a",
@@ -114,16 +130,28 @@ class DashboardFragment : Fragment() {
         dateTimeTextView.text = dateFormat.format(calendar.time)
     }
 
+    /**
+     * Updates dashboard cards, study plan and upcoming deadlines.
+     *
+     * @param tasks Current list of tasks for the logged-in user.
+     */
     private fun updateDashboard(tasks: List<Task>) {
         val overdue = ScheduleGenerator.countOverdue(tasks)
         val dueToday = ScheduleGenerator.countDueToday(tasks)
         val thisWeek = ScheduleGenerator.countThisWeek(tasks)
         val completed = tasks.count { it.completed }
 
-        overdueCardTextView.text = "$overdue\nOverdue"
-        dueTodayCardTextView.text = "$dueToday\nDue Today"
-        thisWeekCardTextView.text = "$thisWeek\nThis Week"
-        completedCardTextView.text = "$completed\nCompleted"
+        overdueCardTextView.text =
+            "$overdue\n${getString(R.string.overdue_card)}"
+
+        dueTodayCardTextView.text =
+            "$dueToday\n${getString(R.string.due_today_card)}"
+
+        thisWeekCardTextView.text =
+            "$thisWeek\n${getString(R.string.this_week_card)}"
+
+        completedCardTextView.text =
+            "$completed\n${getString(R.string.completed_card)}"
 
         val activeTasks = tasks
             .filter { !it.completed }
@@ -134,7 +162,7 @@ class DashboardFragment : Fragment() {
 
         studyPlanTextView.text =
             if (activeTasks.isEmpty()) {
-                "No active tasks today.\nTap Add Task to create a new study plan."
+                getString(R.string.no_active_tasks)
             } else {
                 activeTasks.mapIndexed { index, task ->
                     "${index + 1}. ${task.title} (${task.estimatedHours} hrs)"
@@ -153,15 +181,15 @@ class DashboardFragment : Fragment() {
 
         upcomingDeadlinesTextView.text =
             if (upcomingTasks.isEmpty()) {
-                "No upcoming deadlines."
+                getString(R.string.no_upcoming_deadlines)
             } else {
                 upcomingTasks.joinToString("\n\n") { task ->
                     val days = ScheduleGenerator.calculateDaysRemaining(task.deadline)
 
                     val dueText = when (days) {
-                        0L -> "Due today"
-                        1L -> "Due tomorrow"
-                        else -> "Due in $days days"
+                        0L -> getString(R.string.due_today)
+                        1L -> getString(R.string.due_tomorrow)
+                        else -> getString(R.string.due_in_days, days.toInt())
                     }
 
                     "• ${task.title}\n  ${task.course} - $dueText"
@@ -169,6 +197,11 @@ class DashboardFragment : Fragment() {
             }
     }
 
+    /**
+     * Enables automatic reminders for due and upcoming tasks.
+     *
+     * Reminders are scheduled every four hours for the next seven days.
+     */
     private fun enableAutomaticReminders() {
         val dueAndUpcomingTasks = latestTasks
             .filter {
@@ -181,16 +214,16 @@ class DashboardFragment : Fragment() {
 
         val reminderMessage =
             if (dueAndUpcomingTasks.isEmpty()) {
-                "No due or upcoming assignments in the next 7 days."
+                getString(R.string.no_due_assignments)
             } else {
                 dueAndUpcomingTasks.take(5).joinToString("\n") { task ->
                     val days = ScheduleGenerator.calculateDaysRemaining(task.deadline)
 
                     val dueText = when {
-                        days < 0 -> "Overdue"
-                        days == 0L -> "Due today"
-                        days == 1L -> "Due tomorrow"
-                        else -> "Due in $days days"
+                        days < 0 -> getString(R.string.overdue_status)
+                        days == 0L -> getString(R.string.due_today)
+                        days == 1L -> getString(R.string.due_tomorrow)
+                        else -> getString(R.string.due_in_days, days.toInt())
                     }
 
                     "${task.title} - $dueText"
@@ -204,16 +237,19 @@ class DashboardFragment : Fragment() {
 
         Toast.makeText(
             requireContext(),
-            "Automatic reminders enabled every 4 hours for 7 days",
+            getString(R.string.auto_reminder_enabled),
             Toast.LENGTH_LONG
         ).show()
     }
 
+    /**
+     * Shows logout confirmation and clears the current session.
+     */
     private fun confirmLogout() {
         AlertDialog.Builder(requireContext())
-            .setTitle("Logout")
-            .setMessage("Are you sure you want to logout?")
-            .setPositiveButton("Logout") { _, _ ->
+            .setTitle(getString(R.string.logout_title))
+            .setMessage(getString(R.string.logout_message))
+            .setPositiveButton(getString(R.string.logout_button)) { _, _ ->
                 requireActivity()
                     .getSharedPreferences("smartacademia_session", Context.MODE_PRIVATE)
                     .edit()
@@ -226,7 +262,7 @@ class DashboardFragment : Fragment() {
 
                 startActivity(intent)
             }
-            .setNegativeButton("Cancel", null)
+            .setNegativeButton(getString(R.string.cancel_button), null)
             .show()
     }
 }
