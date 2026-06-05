@@ -33,6 +33,7 @@ import au.edu.cqu.smartacademia.viewmodel.TaskViewModel
  * - Supports task completion tracking.
  * - Retrieves remote tasks through HTTP.
  * - Uses ViewModel and LiveData to keep the UI updated.
+ * - Applies urgency-first smart priority sorting.
  */
 class TaskListFragment : Fragment() {
 
@@ -46,29 +47,36 @@ class TaskListFragment : Fragment() {
 
     /**
      * Creates and initialises the task list screen.
-     *
-     * Sets up RecyclerView, task adapter, sorting controls,
-     * add task button, HTTP fetch button and LiveData observer.
      */
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_task_list, container, false)
+        val view =
+            inflater.inflate(R.layout.fragment_task_list, container, false)
 
         userEmail = requireActivity()
             .getSharedPreferences("smartacademia_session", Context.MODE_PRIVATE)
             .getString("email", "") ?: ""
 
-        taskViewModel = ViewModelProvider(this)[TaskViewModel::class.java]
+        taskViewModel =
+            ViewModelProvider(this)[TaskViewModel::class.java]
 
-        val addTaskButton = view.findViewById<Button>(R.id.addTaskButton)
-        val fetchTasksButton = view.findViewById<Button>(R.id.fetchTasksButton)
-        val taskRecyclerView = view.findViewById<RecyclerView>(R.id.taskRecyclerView)
+        val addTaskButton =
+            view.findViewById<Button>(R.id.addTaskButton)
 
-        sortSpinner = view.findViewById(R.id.sortSpinner)
-        sortedByTextView = view.findViewById(R.id.sortedByTextView)
+        val fetchTasksButton =
+            view.findViewById<Button>(R.id.fetchTasksButton)
+
+        val taskRecyclerView =
+            view.findViewById<RecyclerView>(R.id.taskRecyclerView)
+
+        sortSpinner =
+            view.findViewById(R.id.sortSpinner)
+
+        sortedByTextView =
+            view.findViewById(R.id.sortedByTextView)
 
         setupSortSpinner()
 
@@ -89,11 +97,16 @@ class TaskListFragment : Fragment() {
             }
         )
 
-        taskRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        taskRecyclerView.adapter = taskAdapter
+        taskRecyclerView.layoutManager =
+            LinearLayoutManager(requireContext())
+
+        taskRecyclerView.adapter =
+            taskAdapter
 
         addTaskButton.setOnClickListener {
-            startActivity(Intent(requireContext(), AddTaskActivity::class.java))
+            startActivity(
+                Intent(requireContext(), AddTaskActivity::class.java)
+            )
         }
 
         fetchTasksButton.setOnClickListener {
@@ -107,20 +120,19 @@ class TaskListFragment : Fragment() {
         }
 
         taskViewModel.loadSeedData(userEmail)
+        taskViewModel.fetchTasksFromApi(userEmail)
 
-        taskViewModel.getTasksForUser(userEmail).observe(viewLifecycleOwner) { tasks ->
-            allTasks = tasks
-            applySorting()
-        }
+        taskViewModel.getTasksForUser(userEmail)
+            .observe(viewLifecycleOwner) { tasks ->
+                allTasks = tasks
+                applySorting()
+            }
 
         return view
     }
 
     /**
-     * Configures task sorting and filtering options.
-     *
-     * Users can filter or sort tasks by active status,
-     * completion status, priority, deadline, course or weight.
+     * Configures sorting and filtering options.
      */
     private fun setupSortSpinner() {
         val sortOptions = listOf(
@@ -139,8 +151,12 @@ class TaskListFragment : Fragment() {
             sortOptions
         )
 
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        sortSpinner.adapter = adapter
+        adapter.setDropDownViewResource(
+            android.R.layout.simple_spinner_dropdown_item
+        )
+
+        sortSpinner.adapter =
+            adapter
 
         sortSpinner.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
@@ -161,42 +177,109 @@ class TaskListFragment : Fragment() {
     }
 
     /**
-     * Applies filtering and sorting based on the selected option.
-     *
-     * Updates both the descriptive label and the RecyclerView contents.
+     * Applies filtering and sorting based on the selected dropdown option.
      */
     private fun applySorting() {
         val selectedSort =
-            sortSpinner.selectedItem?.toString() ?: getString(R.string.active_tasks)
+            sortSpinner.selectedItem?.toString()
+                ?: getString(R.string.active_tasks)
 
-        sortedByTextView.text = when (selectedSort) {
-            getString(R.string.active_tasks) -> getString(R.string.showing_active_tasks)
-            getString(R.string.completed_tasks) -> getString(R.string.showing_completed_tasks)
-            getString(R.string.all_tasks) -> getString(R.string.showing_all_tasks)
-            getString(R.string.priority) -> getString(R.string.sorted_by_priority)
-            getString(R.string.deadline) -> getString(R.string.sorted_by_deadline)
-            getString(R.string.course) -> getString(R.string.sorted_by_course)
-            getString(R.string.weight) -> getString(R.string.sorted_by_weight)
-            else -> getString(R.string.showing_active_tasks)
-        }
+        sortedByTextView.text =
+            when (selectedSort) {
+                getString(R.string.active_tasks) ->
+                    getString(R.string.showing_active_tasks)
 
-        val filteredTasks = when (selectedSort) {
-            getString(R.string.completed_tasks) -> allTasks.filter { it.completed }
-            getString(R.string.all_tasks) -> allTasks
-            else -> allTasks.filter { !it.completed }
-        }
+                getString(R.string.completed_tasks) ->
+                    getString(R.string.showing_completed_tasks)
 
-        val sortedTasks = when (selectedSort) {
-            getString(R.string.deadline) -> filteredTasks.sortedBy { it.deadline }
-            getString(R.string.course) -> filteredTasks.sortedBy { it.course }
-            getString(R.string.weight) -> filteredTasks.sortedByDescending { it.weight }
-            getString(R.string.priority) -> filteredTasks.sortedByDescending {
-                ScheduleGenerator.calculatePriorityScore(it)
+                getString(R.string.all_tasks) ->
+                    getString(R.string.showing_all_tasks)
+
+                getString(R.string.priority) ->
+                    getString(R.string.sorted_by_priority)
+
+                getString(R.string.deadline) ->
+                    getString(R.string.sorted_by_deadline)
+
+                getString(R.string.course) ->
+                    getString(R.string.sorted_by_course)
+
+                getString(R.string.weight) ->
+                    getString(R.string.sorted_by_weight)
+
+                else ->
+                    getString(R.string.showing_active_tasks)
             }
-            else -> filteredTasks.sortedByDescending {
-                ScheduleGenerator.calculatePriorityScore(it)
+
+        val sortedTasks =
+            when (selectedSort) {
+
+                getString(R.string.active_tasks) -> {
+                    ScheduleGenerator.sortBySmartPriority(
+                        allTasks.filter { !it.completed }
+                    )
+                }
+
+                getString(R.string.completed_tasks) -> {
+                    allTasks
+                        .filter { it.completed }
+                        .sortedBy {
+                            ScheduleGenerator.calculateDaysRemaining(
+                                it.deadline
+                            )
+                        }
+                }
+
+                getString(R.string.all_tasks) -> {
+                    allTasks.sortedWith(
+                        compareBy<Task> { it.completed }
+                            .thenBy {
+                                ScheduleGenerator.getUrgencyTier(it)
+                            }
+                            .thenByDescending {
+                                ScheduleGenerator.calculatePriorityScore(it)
+                            }
+                    )
+                }
+
+                getString(R.string.priority) -> {
+                    ScheduleGenerator.sortBySmartPriority(
+                        allTasks.filter { !it.completed }
+                    )
+                }
+
+                getString(R.string.deadline) -> {
+                    allTasks
+                        .filter { !it.completed }
+                        .sortedBy {
+                            ScheduleGenerator.calculateDaysRemaining(
+                                it.deadline
+                            )
+                        }
+                }
+
+                getString(R.string.course) -> {
+                    allTasks
+                        .filter { !it.completed }
+                        .sortedBy {
+                            it.course
+                        }
+                }
+
+                getString(R.string.weight) -> {
+                    allTasks
+                        .filter { !it.completed }
+                        .sortedByDescending {
+                            it.weight
+                        }
+                }
+
+                else -> {
+                    ScheduleGenerator.sortBySmartPriority(
+                        allTasks.filter { !it.completed }
+                    )
+                }
             }
-        }
 
         taskAdapter.updateTasks(sortedTasks)
     }

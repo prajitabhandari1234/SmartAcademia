@@ -166,6 +166,13 @@
     <string name="due_today">Due today</string>
     <string name="due_tomorrow">Due tomorrow</string>
     <string name="due_in_days">Due in %1$d days</string>
+    <string name="fetch_remote_tasks">Fetch Remote Tasks</string>
+    <string name="tasks_completed_this_week">Tasks Completed This Week</string>
+    <string name="good_morning_student">Good Morning, Student</string>
+    <string name="default_overdue_card">0\nOverdue</string>
+    <string name="default_due_today_card">0\nDue Today</string>
+    <string name="default_this_week_card">0\nThis Week</string>
+    <string name="default_completed_card">0\nCompleted</string>
 
     <!-- Schedule -->
     <string name="smart_schedule">Smart Schedule</string>

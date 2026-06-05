@@ -14,7 +14,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Analytics"
+            android:text="@string/analytics_title"
             android:textColor="#0B5FA5"
             android:textSize="30sp"
             android:textStyle="bold" />
@@ -23,15 +23,15 @@
             android:id="@+id/analyticsDateTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:textColor="#0B5FA5"
-            android:textSize="16sp"
-            android:layout_marginTop="8dp" />
+            android:textSize="16sp" />
 
         <GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:columnCount="2"
-            android:layout_marginTop="20dp">
+            android:layout_marginTop="20dp"
+            android:columnCount="2">
 
             <TextView
                 android:id="@+id/onTimeRateTextView"
@@ -98,16 +98,17 @@
                 android:gravity="center"
                 android:textColor="#0B5FA5"
                 android:textSize="18sp" />
+
         </GridLayout>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Grade Impact Projection"
+            android:layout_marginTop="20dp"
+            android:text="@string/grade_projection"
             android:textColor="#0B5FA5"
             android:textSize="21sp"
-            android:textStyle="bold"
-            android:layout_marginTop="20dp" />
+            android:textStyle="bold" />
 
         <com.github.mikephil.charting.charts.PieChart
             android:id="@+id/pieChart"
@@ -118,41 +119,42 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Tasks Completed This Week"
+            android:layout_marginTop="20dp"
+            android:text="@string/tasks_completed_this_week"
             android:textColor="#0B5FA5"
             android:textSize="21sp"
-            android:textStyle="bold"
-            android:layout_marginTop="20dp" />
+            android:textStyle="bold" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/previousAnalyticsWeekButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Previous Week" />
+                android:text="@string/previous_week" />
 
             <Button
                 android:id="@+id/nextAnalyticsWeekButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Next Week" />
+                android:text="@string/next_week" />
+
         </LinearLayout>
 
         <TextView
             android:id="@+id/analyticsWeekRangeTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#0B5FA5"
-            android:textStyle="bold"
+            android:layout_marginTop="6dp"
             android:gravity="center"
-            android:layout_marginTop="6dp" />
+            android:textColor="#0B5FA5"
+            android:textStyle="bold" />
 
         <com.github.mikephil.charting.charts.BarChart
             android:id="@+id/barChart"
@@ -164,11 +166,11 @@
             android:id="@+id/upcomingDeadlineTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:background="#DDE6F2"
             android:padding="16dp"
             android:textColor="#0B5FA5"
-            android:textSize="16sp"
-            android:layout_marginTop="20dp" />
+            android:textSize="16sp" />
 
     </LinearLayout>
 </ScrollView>
