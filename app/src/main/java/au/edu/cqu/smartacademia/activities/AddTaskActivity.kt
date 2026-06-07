@@ -1,6 +1,7 @@
 package au.edu.cqu.smartacademia.activities
 
 import android.app.AlertDialog
+import android.app.DatePickerDialog
 import android.location.Geocoder
 import android.os.Bundle
 import android.view.View
@@ -13,19 +14,19 @@ import au.edu.cqu.smartacademia.R
 import au.edu.cqu.smartacademia.database.Task
 import au.edu.cqu.smartacademia.utils.ScheduleGenerator
 import au.edu.cqu.smartacademia.viewmodel.TaskViewModel
+import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Locale
 import java.util.UUID
 
 /**
  * Activity used to add, edit and delete academic tasks.
  *
- * This screen supports the main task management requirement of SmartAcademia.
- * Users can enter academic task details such as title, course, deadline,
- * assessment weight, estimated study hours, notes and a readable location name.
+ * Users enter task details, select a deadline date using a calendar,
+ * manually type the time in HH:mm format, and enter a readable location name.
  *
  * The location name is converted into latitude and longitude using Android
- * Geocoder before the task is saved, so users do not need to manually enter
- * GPS coordinates.
+ * Geocoder before the task is saved.
  */
 class AddTaskActivity : AppCompatActivity() {
 
@@ -46,12 +47,6 @@ class AddTaskActivity : AppCompatActivity() {
 
     /**
      * Creates and initialises the Add/Edit Task screen.
-     *
-     * This method:
-     * - Connects XML views to Kotlin variables.
-     * - Retrieves the logged-in user's email from SharedPreferences.
-     * - Checks whether the screen is adding a new task or editing an existing task.
-     * - Sets up Save, Delete and Cancel button actions.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -97,6 +92,8 @@ class AddTaskActivity : AppCompatActivity() {
         cancelButton =
             findViewById(R.id.cancelButton)
 
+        setupDeadlinePicker()
+
         if (editingTaskId == null) {
             deleteTaskButton.visibility = View.GONE
         } else {
@@ -120,7 +117,61 @@ class AddTaskActivity : AppCompatActivity() {
     }
 
     /**
-     * Loads an existing task into the form when the user selects Edit.
+     * Configures the deadline field.
+     *
+     * When the field is tapped, a calendar is displayed
+     * so the user can select a date. The user then manually
+     * types the time in HH:mm format.
+     */
+    private fun setupDeadlinePicker() {
+        deadlineEditText.setOnClickListener {
+            showDatePickerOnly()
+        }
+    }
+
+    /**
+     * Opens a calendar dialog and inserts the selected date
+     * into the deadline field.
+     *
+     * The inserted value keeps a trailing space so the user
+     * can type the time immediately after the selected date.
+     *
+     * Example result:
+     * 2026-06-05 23:45
+     */
+    private fun showDatePickerOnly() {
+        val calendar =
+            Calendar.getInstance()
+
+        DatePickerDialog(
+            this,
+            { _, year, month, dayOfMonth ->
+                calendar.set(Calendar.YEAR, year)
+                calendar.set(Calendar.MONTH, month)
+                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+
+                val formatter =
+                    SimpleDateFormat(
+                        "yyyy-MM-dd",
+                        Locale.getDefault()
+                    )
+
+                deadlineEditText.setText(
+                    "${formatter.format(calendar.time)} "
+                )
+
+                deadlineEditText.setSelection(
+                    deadlineEditText.text.length
+                )
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        ).show()
+    }
+
+    /**
+     * Loads an existing task into the form when editing.
      *
      * @param taskId Unique identifier of the task being edited.
      */
@@ -141,9 +192,9 @@ class AddTaskActivity : AppCompatActivity() {
     /**
      * Saves a new task or updates an existing task.
      *
-     * The method validates required fields, converts the readable location
-     * name into map coordinates, calculates task priority and stores the
-     * task in the Room database through the TaskViewModel.
+     * This method validates required fields, validates the deadline format,
+     * converts the location name into coordinates, calculates the priority
+     * score and saves the task through the ViewModel.
      */
     private fun saveOrUpdateTask() {
         val title =
@@ -178,6 +229,16 @@ class AddTaskActivity : AppCompatActivity() {
                 this,
                 getString(R.string.empty_fields_message),
                 Toast.LENGTH_SHORT
+            ).show()
+
+            return
+        }
+
+        if (!isValidDeadlineFormat(deadline)) {
+            Toast.makeText(
+                this,
+                getString(R.string.invalid_deadline_message),
+                Toast.LENGTH_LONG
             ).show()
 
             return
@@ -240,14 +301,36 @@ class AddTaskActivity : AppCompatActivity() {
     }
 
     /**
+     * Validates the deadline format entered by the user.
+     *
+     * Expected format:
+     * yyyy-MM-dd HH:mm
+     *
+     * @param deadline Deadline text entered by the user.
+     * @return True if the deadline follows the required format.
+     */
+    private fun isValidDeadlineFormat(
+        deadline: String
+    ): Boolean {
+        return try {
+            val formatter =
+                SimpleDateFormat(
+                    "yyyy-MM-dd HH:mm",
+                    Locale.getDefault()
+                )
+
+            formatter.isLenient = false
+            formatter.parse(deadline) != null
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    /**
      * Converts a human-readable location name into latitude and longitude.
      *
-     * Android Geocoder is used so users can enter normal place names such as
-     * "CQU Sydney" instead of manually entering decimal GPS coordinates.
-     *
      * @param locationName Location name typed by the user.
-     * @return A Pair containing latitude and longitude. If no location is found,
-     * 0.0 and 0.0 are returned.
+     * @return Pair containing latitude and longitude.
      */
     private fun getCoordinatesFromLocation(
         locationName: String
@@ -274,9 +357,6 @@ class AddTaskActivity : AppCompatActivity() {
 
     /**
      * Deletes the task currently being edited.
-     *
-     * This method is only available when an existing task is opened
-     * in edit mode.
      */
     private fun deleteCurrentTask() {
         editingTaskId?.let { taskId ->
@@ -294,8 +374,6 @@ class AddTaskActivity : AppCompatActivity() {
 
     /**
      * Displays a confirmation dialog before leaving the form.
-     *
-     * This helps prevent users from accidentally losing unsaved changes.
      */
     private fun showDiscardChangesDialog() {
         AlertDialog.Builder(this)

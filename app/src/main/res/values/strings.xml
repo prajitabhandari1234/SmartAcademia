@@ -267,6 +267,7 @@
     <string name="my_location_button">📍 My Location</string>
     <string name="task_location_button">🎯 Task Location</string>
     <string name="location_not_found_message">Location was not found. Please enter a clearer location name.</string>
+    <string name="invalid_deadline_message">Please enter the deadline as yyyy-MM-dd HH:mm, for example 2026-06-05 23:45</string>
 
     <!-- Logout -->
     <string name="logout">Logout</string>
