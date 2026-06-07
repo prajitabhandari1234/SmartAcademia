@@ -172,16 +172,13 @@ class AnalyticsFragment : Fragment() {
             if (totalTasks == 0) 0
             else (completedTasks * 100) / totalTasks
 
-        val completedPercent =
-            if (totalTasks == 0) 0
-            else (completedTasks * 100) / totalTasks
+        val completedWeight =
+            tasks.filter { it.completed }
+                .sumOf { it.weight }
 
-        val inProgressPercent =
-            if (totalTasks == 0) 0
-            else (pendingTasks * 100) / totalTasks
-
-        val notStartedPercent =
-            (100 - completedPercent - inProgressPercent).coerceAtLeast(0)
+        val pendingWeight =
+            tasks.filter { !it.completed }
+                .sumOf { it.weight }
 
         val totalStudyHours = tasks
             .filter { !it.completed }
@@ -207,9 +204,8 @@ class AnalyticsFragment : Fragment() {
 
         setupPieChart(
             pieChart,
-            completedPercent,
-            inProgressPercent,
-            notStartedPercent
+            completedWeight,
+            pendingWeight
         )
 
         setupBarChart(
@@ -222,43 +218,52 @@ class AnalyticsFragment : Fragment() {
     }
 
     /**
-     * Configures the progress pie chart.
+     * Configures the grade impact pie chart.
+     *
+     * The chart compares completed assessment weight
+     * against remaining pending assessment weight.
+     *
+     * This is more meaningful than task count because
+     * high-weight assessments have greater academic impact.
+     *
+     * @param completedWeight Total weight of completed tasks.
+     * @param pendingWeight Total weight of incomplete tasks.
      */
     private fun setupPieChart(
         pieChart: PieChart,
-        completedPercent: Int,
-        inProgressPercent: Int,
-        notStartedPercent: Int
+        completedWeight: Int,
+        pendingWeight: Int
     ) {
         val entries = ArrayList<PieEntry>()
 
-        entries.add(
-            PieEntry(
-                completedPercent.toFloat(),
-                getString(R.string.completed)
+        if (completedWeight == 0 && pendingWeight == 0) {
+            entries.add(
+                PieEntry(
+                    1f,
+                    getString(R.string.no_grade_data)
+                )
             )
-        )
+        } else {
+            entries.add(
+                PieEntry(
+                    completedWeight.toFloat(),
+                    getString(R.string.completed_grade_weight)
+                )
+            )
 
-        entries.add(
-            PieEntry(
-                inProgressPercent.toFloat(),
-                getString(R.string.in_progress)
+            entries.add(
+                PieEntry(
+                    pendingWeight.toFloat(),
+                    getString(R.string.pending_grade_weight)
+                )
             )
-        )
-
-        entries.add(
-            PieEntry(
-                notStartedPercent.toFloat(),
-                getString(R.string.not_started)
-            )
-        )
+        }
 
         val dataSet = PieDataSet(entries, "")
 
         dataSet.colors = listOf(
             Color.rgb(47, 128, 199),
-            Color.rgb(155, 196, 230),
-            Color.rgb(220, 230, 240)
+            Color.rgb(155, 196, 230)
         )
 
         dataSet.valueTextColor = Color.rgb(11, 95, 165)
@@ -266,7 +271,7 @@ class AnalyticsFragment : Fragment() {
 
         pieChart.data = PieData(dataSet)
         pieChart.description.isEnabled = false
-        pieChart.centerText = getString(R.string.progress_chart_title)
+        pieChart.centerText = getString(R.string.grade_impact_chart_title)
         pieChart.setCenterTextSize(16f)
         pieChart.setHoleColor(Color.TRANSPARENT)
         pieChart.legend.isEnabled = true
