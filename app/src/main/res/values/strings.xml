@@ -85,6 +85,7 @@
     <string name="task_completed_message">Task marked as completed</string>
     <string name="fetching_tasks_message">Fetching remote tasks...</string>
 
+
     <!-- Add/Edit Task -->
     <string name="add_task_title">Add New Task</string>
     <string name="edit_task_title">Edit Task</string>
@@ -265,6 +266,7 @@
     <string name="back_arrow">←</string>
     <string name="my_location_button">📍 My Location</string>
     <string name="task_location_button">🎯 Task Location</string>
+    <string name="location_not_found_message">Location was not found. Please enter a clearer location name.</string>
 
     <!-- Logout -->
     <string name="logout">Logout</string>

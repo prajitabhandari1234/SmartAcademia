@@ -24,106 +24,72 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_marginTop="18dp"
-            android:autofillHints="name"
             android:hint="@string/task_title_hint"
-            android:inputType="textCapWords"
-            android:textColor="#1F2933"
-            android:textColorHint="#5F6B76" />
+            android:inputType="textCapWords" />
 
         <EditText
             android:id="@+id/courseEditText"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_marginTop="10dp"
-            android:autofillHints="organizationName"
             android:hint="@string/course_hint"
-            android:inputType="textCapCharacters"
-            android:textColor="#1F2933"
-            android:textColorHint="#5F6B76" />
+            android:inputType="textCapCharacters" />
 
         <EditText
             android:id="@+id/deadlineEditText"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_marginTop="10dp"
-            android:autofillHints="none"
             android:hint="@string/deadline_hint"
-            android:inputType="datetime"
-            android:textColor="#1F2933"
-            android:textColorHint="#5F6B76" />
+            android:inputType="datetime" />
 
         <EditText
             android:id="@+id/weightEditText"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_marginTop="10dp"
-            android:autofillHints="none"
             android:hint="@string/weight_hint"
-            android:inputType="number"
-            android:textColor="#1F2933"
-            android:textColorHint="#5F6B76" />
+            android:inputType="number" />
 
         <EditText
             android:id="@+id/hoursEditText"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_marginTop="10dp"
-            android:autofillHints="none"
             android:hint="@string/hours_hint"
-            android:inputType="number"
-            android:textColor="#1F2933"
-            android:textColorHint="#5F6B76" />
+            android:inputType="number" />
 
         <EditText
             android:id="@+id/notesEditText"
             android:layout_width="match_parent"
             android:layout_height="80dp"
             android:layout_marginTop="10dp"
-            android:autofillHints="none"
             android:gravity="top"
             android:hint="@string/notes_hint"
             android:inputType="textMultiLine"
-            android:minLines="2"
-            android:textColor="#1F2933"
-            android:textColorHint="#5F6B76" />
+            android:minLines="2" />
 
         <EditText
-            android:id="@+id/latEditText"
+            android:id="@+id/locationNameEditText"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_marginTop="10dp"
-            android:autofillHints="none"
-            android:hint="@string/latitude_hint"
-            android:inputType="numberDecimal|numberSigned"
-            android:textColor="#1F2933"
-            android:textColorHint="#5F6B76" />
-
-        <EditText
-            android:id="@+id/lonEditText"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_marginTop="10dp"
-            android:autofillHints="none"
-            android:hint="@string/longitude_hint"
-            android:inputType="numberDecimal|numberSigned"
-            android:textColor="#1F2933"
-            android:textColorHint="#5F6B76" />
+            android:hint="@string/location_name_hint"
+            android:inputType="textCapWords" />
 
         <Button
             android:id="@+id/saveTaskButton"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_marginTop="22dp"
-            android:text="@string/save_task_button"
-            android:textColor="#FFFFFF" />
+            android:text="@string/save_task_button" />
 
         <Button
             android:id="@+id/deleteTaskButton"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_marginTop="10dp"
-            android:text="@string/delete_task"
-            android:textColor="#FFFFFF" />
+            android:text="@string/delete_task" />
 
         <Button
             android:id="@+id/cancelButton"
@@ -131,8 +97,7 @@
             android:layout_height="56dp"
             android:layout_marginTop="10dp"
             android:backgroundTint="#616161"
-            android:text="@string/cancel_button"
-            android:textColor="#FFFFFF" />
+            android:text="@string/cancel_button" />
 
     </LinearLayout>
 </ScrollView>

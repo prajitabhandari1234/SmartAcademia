@@ -14,7 +14,7 @@ import androidx.room.RoomDatabase
  */
 @Database(
     entities = [User::class, Task::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class SmartAcademiaDatabase : RoomDatabase() {

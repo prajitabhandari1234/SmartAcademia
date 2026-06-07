@@ -8,7 +8,8 @@ import java.util.UUID
 /**
  * Task entity used by the SmartAcademia Room database.
  *
- * Stores assignment, study, and academic planning information
+ * Stores assignment, study planning, scheduling,
+ * completion status and location information
  * for each registered user.
  *
  * Implements Serializable so task objects can be passed
@@ -24,12 +25,12 @@ data class Task(
     val id: String = UUID.randomUUID().toString(),
 
     /**
-     * Email of the user who owns the task.
+     * Email address of the user who owns the task.
      */
     var userEmail: String,
 
     /**
-     * Task or assignment title.
+     * Task or assessment title.
      */
     var title: String,
 
@@ -47,12 +48,12 @@ data class Task(
     var deadline: String,
 
     /**
-     * Assessment weight percentage.
+     * Assessment weighting percentage.
      */
     var weight: Int,
 
     /**
-     * Estimated study hours required.
+     * Estimated study hours required to complete the task.
      */
     var estimatedHours: Int,
 
@@ -62,24 +63,36 @@ data class Task(
     var notes: String = "",
 
     /**
-     * Calculated priority score used for
-     * scheduling and task sorting.
+     * Calculated priority score used by the
+     * Smart Scheduling feature.
      */
     var priorityScore: Int = 0,
 
     /**
-     * Indicates whether the task
-     * has been completed.
+     * Indicates whether the task has been completed.
      */
     var completed: Boolean = false,
 
     /**
-     * Latitude coordinate used by Google Maps.
+     * Human-readable location entered by the user.
+     *
+     * Example:
+     * CQU Sydney
+     * University of Sydney
+     */
+    var locationName: String = "",
+
+    /**
+     * Latitude coordinate generated from the location name.
+     *
+     * Used by Google Maps when displaying task locations.
      */
     var lat: Double = 0.0,
 
     /**
-     * Longitude coordinate used by Google Maps.
+     * Longitude coordinate generated from the location name.
+     *
+     * Used by Google Maps when displaying task locations.
      */
     var lon: Double = 0.0
 
