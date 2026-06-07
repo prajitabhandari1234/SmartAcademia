@@ -52,15 +52,32 @@ class AnalyticsFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_analytics, container, false)
 
-        val analyticsDateTextView = view.findViewById<TextView>(R.id.analyticsDateTextView)
-        val onTimeRateTextView = view.findViewById<TextView>(R.id.onTimeRateTextView)
-        val taskDoneTextView = view.findViewById<TextView>(R.id.taskDoneTextView)
-        val overdueTextView = view.findViewById<TextView>(R.id.overdueTextView)
-        val upcomingTextView = view.findViewById<TextView>(R.id.upcomingTextView)
-        val productivityTextView = view.findViewById<TextView>(R.id.productivityTextView)
-        val studyHoursTextView = view.findViewById<TextView>(R.id.studyHoursTextView)
-        val upcomingDeadlineTextView = view.findViewById<TextView>(R.id.upcomingDeadlineTextView)
-        val analyticsWeekRangeTextView = view.findViewById<TextView>(R.id.analyticsWeekRangeTextView)
+        val analyticsDateTextView =
+            view.findViewById<TextView>(R.id.analyticsDateTextView)
+
+        val onTimeRateTextView =
+            view.findViewById<TextView>(R.id.onTimeRateTextView)
+
+        val taskDoneTextView =
+            view.findViewById<TextView>(R.id.taskDoneTextView)
+
+        val overdueTextView =
+            view.findViewById<TextView>(R.id.overdueTextView)
+
+        val upcomingTextView =
+            view.findViewById<TextView>(R.id.upcomingTextView)
+
+        val productivityTextView =
+            view.findViewById<TextView>(R.id.productivityTextView)
+
+        val studyHoursTextView =
+            view.findViewById<TextView>(R.id.studyHoursTextView)
+
+        val upcomingDeadlineTextView =
+            view.findViewById<TextView>(R.id.upcomingDeadlineTextView)
+
+        val analyticsWeekRangeTextView =
+            view.findViewById<TextView>(R.id.analyticsWeekRangeTextView)
 
         val previousAnalyticsWeekButton =
             view.findViewById<Button>(R.id.previousAnalyticsWeekButton)
@@ -68,11 +85,17 @@ class AnalyticsFragment : Fragment() {
         val nextAnalyticsWeekButton =
             view.findViewById<Button>(R.id.nextAnalyticsWeekButton)
 
-        val pieChart = view.findViewById<PieChart>(R.id.pieChart)
-        val barChart = view.findViewById<BarChart>(R.id.barChart)
+        val pieChart =
+            view.findViewById<PieChart>(R.id.pieChart)
 
-        val dateFormat = SimpleDateFormat("EEEE, d MMMM yyyy", Locale.getDefault())
-        analyticsDateTextView.text = dateFormat.format(Calendar.getInstance().time)
+        val barChart =
+            view.findViewById<BarChart>(R.id.barChart)
+
+        val dateFormat =
+            SimpleDateFormat("EEEE, d MMMM yyyy", Locale.getDefault())
+
+        analyticsDateTextView.text =
+            dateFormat.format(Calendar.getInstance().time)
 
         setStartOfWeek()
 
@@ -115,9 +138,6 @@ class AnalyticsFragment : Fragment() {
 
     /**
      * Calculates and displays task analytics.
-     *
-     * Updates statistic cards, progress chart,
-     * weekly chart and upcoming deadline summary.
      *
      * @param tasks Current list of user tasks.
      */
@@ -192,17 +212,17 @@ class AnalyticsFragment : Fragment() {
             notStartedPercent
         )
 
-        setupBarChart(barChart, analyticsWeekRangeTextView)
+        setupBarChart(
+            barChart,
+            analyticsWeekRangeTextView
+        )
 
-        upcomingDeadlineTextView.text = generateUpcomingDeadlineText(tasks)
+        upcomingDeadlineTextView.text =
+            generateUpcomingDeadlineText(tasks)
     }
 
     /**
      * Configures the progress pie chart.
-     *
-     * @param completedPercent Percentage of completed tasks.
-     * @param inProgressPercent Percentage of active tasks.
-     * @param notStartedPercent Percentage of not-started tasks.
      */
     private fun setupPieChart(
         pieChart: PieChart,
@@ -222,18 +242,19 @@ class AnalyticsFragment : Fragment() {
         entries.add(
             PieEntry(
                 inProgressPercent.toFloat(),
-                "In Progress"
+                getString(R.string.in_progress)
             )
         )
 
         entries.add(
             PieEntry(
                 notStartedPercent.toFloat(),
-                "Not Started"
+                getString(R.string.not_started)
             )
         )
 
         val dataSet = PieDataSet(entries, "")
+
         dataSet.colors = listOf(
             Color.rgb(47, 128, 199),
             Color.rgb(155, 196, 230),
@@ -253,8 +274,7 @@ class AnalyticsFragment : Fragment() {
     }
 
     /**
-     * Sets the analytics calendar to the beginning
-     * of the current week.
+     * Sets the analytics calendar to the beginning of the current week.
      */
     private fun setStartOfWeek() {
         while (chartWeekStart.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
@@ -263,10 +283,10 @@ class AnalyticsFragment : Fragment() {
     }
 
     /**
-     * Generates the weekly bar chart for the selected week.
+     * Generates the weekly bar chart using real completed task data.
      *
-     * @param barChart Bar chart view.
-     * @param analyticsWeekRangeTextView TextView that displays the selected week range.
+     * Because the Task entity does not store a completed date,
+     * completed tasks are grouped by their deadline date.
      */
     private fun setupBarChart(
         barChart: BarChart,
@@ -275,23 +295,37 @@ class AnalyticsFragment : Fragment() {
         val entries = ArrayList<BarEntry>()
         val labels = ArrayList<String>()
 
-        val dateFormat = SimpleDateFormat("EEE", Locale.getDefault())
-        val rangeFormat = SimpleDateFormat("d MMM yyyy", Locale.getDefault())
+        val dayFormat =
+            SimpleDateFormat("EEE", Locale.getDefault())
 
-        val weekEnd = chartWeekStart.clone() as Calendar
+        val rangeFormat =
+            SimpleDateFormat("d MMM yyyy", Locale.getDefault())
+
+        val weekEnd =
+            chartWeekStart.clone() as Calendar
+
         weekEnd.add(Calendar.DAY_OF_MONTH, 6)
 
         analyticsWeekRangeTextView.text =
             "${rangeFormat.format(chartWeekStart.time)} - ${rangeFormat.format(weekEnd.time)}"
 
         for (i in 0..6) {
-            val day = chartWeekStart.clone() as Calendar
+            val day =
+                chartWeekStart.clone() as Calendar
+
             day.add(Calendar.DAY_OF_MONTH, i)
 
-            labels.add(dateFormat.format(day.time))
+            labels.add(dayFormat.format(day.time))
 
-            val value = getDemoWeeklyValue(i)
-            entries.add(BarEntry(i.toFloat(), value.toFloat()))
+            val value =
+                getCompletedTaskCountForDay(day)
+
+            entries.add(
+                BarEntry(
+                    i.toFloat(),
+                    value.toFloat()
+                )
+            )
         }
 
         val dataSet = BarDataSet(
@@ -324,30 +358,52 @@ class AnalyticsFragment : Fragment() {
     }
 
     /**
-     * Returns weekly chart values.
+     * Counts completed tasks for the selected day.
      *
-     * These values are currently sample values used
-     * for visualising the weekly analytics chart.
-     *
-     * @param index Day index of the week.
-     * @return Number of completed tasks.
+     * Since the current Task entity does not include completedAt,
+     * this method uses task deadline date as the weekly grouping date.
      */
-    private fun getDemoWeeklyValue(index: Int): Int {
-        return when (index) {
-            0 -> 2
-            1 -> 3
-            2 -> 1
-            3 -> 4
-            4 -> 1
-            else -> 0
+    private fun getCompletedTaskCountForDay(day: Calendar): Int {
+        return currentTasks.count { task ->
+            task.completed &&
+                    isTaskDeadlineOnSameDay(task.deadline, day)
+        }
+    }
+
+    /**
+     * Checks whether a task deadline is on the selected calendar day.
+     */
+    private fun isTaskDeadlineOnSameDay(
+        deadline: String,
+        selectedDay: Calendar
+    ): Boolean {
+        val deadlineDate = parseTaskDeadline(deadline) ?: return false
+
+        val taskCalendar = Calendar.getInstance()
+        taskCalendar.time = deadlineDate
+
+        return taskCalendar.get(Calendar.YEAR) ==
+                selectedDay.get(Calendar.YEAR) &&
+                taskCalendar.get(Calendar.DAY_OF_YEAR) ==
+                selectedDay.get(Calendar.DAY_OF_YEAR)
+    }
+
+    /**
+     * Parses a task deadline string.
+     */
+    private fun parseTaskDeadline(deadline: String): java.util.Date? {
+        return try {
+            val dateFormat =
+                SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+
+            dateFormat.parse(deadline)
+        } catch (e: Exception) {
+            null
         }
     }
 
     /**
      * Generates a summary of the nearest upcoming deadlines.
-     *
-     * @param tasks Current list of user tasks.
-     * @return Formatted upcoming deadline text.
      */
     private fun generateUpcomingDeadlineText(tasks: List<Task>): String {
         val upcoming = tasks
@@ -371,13 +427,18 @@ class AnalyticsFragment : Fragment() {
         text.append("\n\n")
 
         upcoming.forEach { task ->
-            val days = ScheduleGenerator.calculateDaysRemaining(task.deadline)
+            val days =
+                ScheduleGenerator.calculateDaysRemaining(task.deadline)
 
-            val dueText = when (days) {
-                0L -> getString(R.string.due_today)
-                1L -> getString(R.string.due_tomorrow)
-                else -> getString(R.string.due_in_days, days.toInt())
-            }
+            val dueText =
+                when (days) {
+                    0L -> getString(R.string.due_today)
+                    1L -> getString(R.string.due_tomorrow)
+                    else -> getString(
+                        R.string.due_in_days,
+                        days.toInt()
+                    )
+                }
 
             text.append("• ${task.title}\n")
             text.append("  ${task.course} - $dueText\n\n")
