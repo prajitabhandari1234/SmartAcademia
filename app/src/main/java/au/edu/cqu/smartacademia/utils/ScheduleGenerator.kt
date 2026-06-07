@@ -103,10 +103,31 @@ object ScheduleGenerator {
     fun sortBySmartPriority(tasks: List<Task>): List<Task> {
         return tasks
             .filter { !it.completed }
-            .sortedWith(
-                compareBy<Task> { getUrgencyTier(it) }
-                    .thenByDescending { calculatePriorityScore(it) }
-            )
+            .sortedWith { task1, task2 ->
+                val days1 = calculateDaysRemaining(task1.deadline)
+                val days2 = calculateDaysRemaining(task2.deadline)
+
+                when {
+                    days1 < 0 && days2 < 0 -> {
+                        days1.compareTo(days2)
+                    }
+
+                    days1 < 0 -> -1
+
+                    days2 < 0 -> 1
+
+                    else -> {
+                        val dateCompare = days1.compareTo(days2)
+
+                        if (dateCompare != 0) {
+                            dateCompare
+                        } else {
+                            calculatePriorityScore(task2)
+                                .compareTo(calculatePriorityScore(task1))
+                        }
+                    }
+                }
+            }
     }
 
     /**
