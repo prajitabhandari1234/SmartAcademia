@@ -133,9 +133,6 @@ class AddTaskActivity : AppCompatActivity() {
      * Opens a calendar dialog and inserts the selected date
      * into the deadline field.
      *
-     * The inserted value keeps a trailing space so the user
-     * can type the time immediately after the selected date.
-     *
      * Example result:
      * 2026-06-05 23:45
      */
@@ -192,9 +189,9 @@ class AddTaskActivity : AppCompatActivity() {
     /**
      * Saves a new task or updates an existing task.
      *
-     * This method validates required fields, validates the deadline format,
-     * converts the location name into coordinates, calculates the priority
-     * score and saves the task through the ViewModel.
+     * This method validates required fields, validates numeric ranges,
+     * validates the deadline format, converts the location name into
+     * coordinates, calculates the priority score and saves the task.
      */
     private fun saveOrUpdateTask() {
         val title =
@@ -229,6 +226,32 @@ class AddTaskActivity : AppCompatActivity() {
                 this,
                 getString(R.string.empty_fields_message),
                 Toast.LENGTH_SHORT
+            ).show()
+
+            return
+        }
+
+        val weight =
+            weightText.toIntOrNull()
+
+        val estimatedHours =
+            hoursText.toIntOrNull()
+
+        if (weight == null || weight !in 1..100) {
+            Toast.makeText(
+                this,
+                getString(R.string.invalid_weight_message),
+                Toast.LENGTH_LONG
+            ).show()
+
+            return
+        }
+
+        if (estimatedHours == null || estimatedHours !in 1..200) {
+            Toast.makeText(
+                this,
+                getString(R.string.invalid_hours_message),
+                Toast.LENGTH_LONG
             ).show()
 
             return
@@ -271,8 +294,8 @@ class AddTaskActivity : AppCompatActivity() {
             title = title,
             course = course,
             deadline = deadline,
-            weight = weightText.toIntOrNull() ?: 0,
-            estimatedHours = hoursText.toIntOrNull() ?: 0,
+            weight = weight,
+            estimatedHours = estimatedHours,
             notes = notes,
             locationName = locationName,
             lat = coordinates.first,
@@ -305,13 +328,8 @@ class AddTaskActivity : AppCompatActivity() {
      *
      * Expected format:
      * yyyy-MM-dd HH:mm
-     *
-     * @param deadline Deadline text entered by the user.
-     * @return True if the deadline follows the required format.
      */
-    private fun isValidDeadlineFormat(
-        deadline: String
-    ): Boolean {
+    private fun isValidDeadlineFormat(deadline: String): Boolean {
         return try {
             val formatter =
                 SimpleDateFormat(

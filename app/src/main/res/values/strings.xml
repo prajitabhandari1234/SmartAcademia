@@ -84,6 +84,8 @@
     <string name="no_tasks">No tasks available</string>
     <string name="task_completed_message">Task marked as completed</string>
     <string name="fetching_tasks_message">Fetching remote tasks...</string>
+    <string name="invalid_weight_message">Weight must be between 1 and 100 percent.</string>
+    <string name="invalid_hours_message">Estimated study hours must be between 1 and 200.</string>
 
 
     <!-- Add/Edit Task -->
