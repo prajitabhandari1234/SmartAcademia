@@ -36,8 +36,19 @@ data class Task(
 
     /**
      * Course code or subject name.
+     *
+     * Example:
+     * COIT13234
      */
     var course: String,
+
+    /**
+     * ID of the unit this task belongs to.
+     *
+     * This creates a connection between assignments
+     * and their parent university unit.
+     */
+    var unitId: String = "",
 
     /**
      * Due date and time.

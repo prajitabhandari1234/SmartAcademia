@@ -12,51 +12,18 @@ import androidx.room.*
 @Dao
 interface TaskDao {
 
-    /**
-     * Inserts a task into the database.
-     *
-     * If a task with the same ID already exists,
-     * it will be replaced.
-     *
-     * @param task Task to insert.
-     */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTask(task: Task)
 
-    /**
-     * Inserts multiple tasks into the database.
-     *
-     * Used when importing tasks from a remote server.
-     *
-     * @param tasks List of tasks to insert.
-     */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTasks(tasks: List<Task>)
 
-    /**
-     * Updates an existing task.
-     *
-     * @param task Updated task object.
-     */
     @Update
     suspend fun updateTask(task: Task)
 
-    /**
-     * Deletes a task from the database.
-     *
-     * @param task Task to delete.
-     */
     @Delete
     suspend fun deleteTask(task: Task)
 
-    /**
-     * Returns all tasks belonging to a user.
-     *
-     * Results are ordered by priority score.
-     *
-     * @param email User email.
-     * @return LiveData list of tasks.
-     */
     @Query(
         "SELECT * FROM tasks " +
                 "WHERE userEmail = :email " +
@@ -65,19 +32,25 @@ interface TaskDao {
     fun getTasksForUser(email: String): LiveData<List<Task>>
 
     /**
-     * Returns the total number of tasks stored.
+     * Returns total number of tasks for one logged-in user.
      *
-     * @return Number of tasks.
+     * Used so each new user receives seed data
+     * when their own task list is empty.
+     *
+     * @param email Logged-in user email.
+     * @return Number of tasks for that user.
+     */
+    @Query("SELECT COUNT(*) FROM tasks WHERE userEmail = :email")
+    suspend fun getTaskCountForUser(email: String): Int
+
+    /**
+     * Returns the total number of tasks stored in the app.
+     *
+     * @return Total number of tasks.
      */
     @Query("SELECT COUNT(*) FROM tasks")
     suspend fun getTaskCount(): Int
 
-    /**
-     * Returns all completed tasks for a user.
-     *
-     * @param email User email.
-     * @return LiveData list of completed tasks.
-     */
     @Query(
         "SELECT * FROM tasks " +
                 "WHERE userEmail = :email " +
@@ -85,12 +58,6 @@ interface TaskDao {
     )
     fun getCompletedTasks(email: String): LiveData<List<Task>>
 
-    /**
-     * Returns all active tasks for a user.
-     *
-     * @param email User email.
-     * @return LiveData list of active tasks.
-     */
     @Query(
         "SELECT * FROM tasks " +
                 "WHERE userEmail = :email " +
@@ -98,30 +65,12 @@ interface TaskDao {
     )
     fun getActiveTasks(email: String): LiveData<List<Task>>
 
-    /**
-     * Finds a task by its ID.
-     *
-     * @param taskId Task identifier.
-     * @return Matching task or null.
-     */
     @Query("SELECT * FROM tasks WHERE id = :taskId LIMIT 1")
     suspend fun getTaskById(taskId: String): Task?
 
-    /**
-     * Deletes a task using its ID.
-     *
-     * @param taskId Task identifier.
-     */
     @Query("DELETE FROM tasks WHERE id = :taskId")
     suspend fun deleteTaskById(taskId: String)
 
-    /**
-     * Finds a task by title and user email.
-     *
-     * @param title Task title.
-     * @param email User email.
-     * @return Matching task or null.
-     */
     @Query(
         "SELECT * FROM tasks " +
                 "WHERE title = :title " +

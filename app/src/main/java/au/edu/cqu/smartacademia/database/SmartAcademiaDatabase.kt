@@ -10,11 +10,12 @@ import androidx.room.RoomDatabase
  *
  * Stores:
  * - User accounts and authentication data.
+ * - University units.
  * - Academic tasks and assignment information.
  */
 @Database(
-    entities = [User::class, Task::class],
-    version = 2,
+    entities = [User::class, Unit::class, Task::class],
+    version = 3,
     exportSchema = false
 )
 abstract class SmartAcademiaDatabase : RoomDatabase() {
@@ -25,6 +26,11 @@ abstract class SmartAcademiaDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
 
     /**
+     * Provides access to Unit database operations.
+     */
+    abstract fun unitDao(): UnitDao
+
+    /**
      * Provides access to Task database operations.
      */
     abstract fun taskDao(): TaskDao
@@ -33,22 +39,19 @@ abstract class SmartAcademiaDatabase : RoomDatabase() {
 
         /**
          * Singleton instance of the Room database.
-         *
-         * Volatile ensures changes made by one thread
-         * are visible to all other threads immediately.
          */
         @Volatile
         private var INSTANCE: SmartAcademiaDatabase? = null
 
         /**
          * Returns the existing database instance.
+         *
          * Creates the database if it does not already exist.
          *
-         * This prevents multiple database instances from
-         * being created during application execution.
+         * fallbackToDestructiveMigration is used during active
+         * development so schema changes do not crash the app.
          */
         fun getDatabase(context: Context): SmartAcademiaDatabase {
-
             return INSTANCE ?: synchronized(this) {
 
                 val instance = Room.databaseBuilder(
@@ -56,6 +59,7 @@ abstract class SmartAcademiaDatabase : RoomDatabase() {
                     SmartAcademiaDatabase::class.java,
                     "smartacademia_database"
                 )
+                    .fallbackToDestructiveMigration()
                     .build()
 
                 INSTANCE = instance
