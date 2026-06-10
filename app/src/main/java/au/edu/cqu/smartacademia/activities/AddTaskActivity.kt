@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -27,6 +28,9 @@ import java.util.UUID
  * details, selecting a deadline, entering assessment weight,
  * estimated study hours, notes and a readable location name.
  *
+ * When opened from a selected unit, the activity shows the unit name,
+ * locks the course field and links the new task to that unit using unitId.
+ *
  * The deadline is selected using a DatePickerDialog followed by
  * a TimePickerDialog. This prevents invalid deadline formats.
  *
@@ -37,9 +41,15 @@ import java.util.UUID
 class AddTaskActivity : AppCompatActivity() {
 
     private lateinit var taskViewModel: TaskViewModel
+
     private var userEmail: String = ""
     private var editingTaskId: String? = null
+    private var selectedUnitId: String = ""
+    private var selectedUnitCode: String = ""
+    private var selectedUnitName: String = ""
 
+    private lateinit var addTaskTitleTextView: TextView
+    private lateinit var selectedUnitTextView: TextView
     private lateinit var titleEditText: EditText
     private lateinit var courseEditText: EditText
     private lateinit var deadlineEditText: EditText
@@ -50,8 +60,6 @@ class AddTaskActivity : AppCompatActivity() {
     private lateinit var saveTaskButton: Button
     private lateinit var deleteTaskButton: Button
     private lateinit var cancelButton: Button
-    private var selectedUnitId: String = ""
-    private var selectedUnitCode: String = ""
 
     /**
      * Creates and initialises the Add/Edit Task screen.
@@ -59,6 +67,7 @@ class AddTaskActivity : AppCompatActivity() {
      * This method:
      * - Initialises the TaskViewModel.
      * - Retrieves the logged-in user email from SharedPreferences.
+     * - Reads selected unit data passed from UnitDetailActivity.
      * - Connects XML views to Kotlin variables.
      * - Configures the deadline picker.
      * - Loads an existing task when editing.
@@ -86,16 +95,20 @@ class AddTaskActivity : AppCompatActivity() {
         selectedUnitCode =
             intent.getStringExtra("unit_code") ?: ""
 
+        selectedUnitName =
+            intent.getStringExtra("unit_name") ?: ""
+
+        addTaskTitleTextView =
+            findViewById(R.id.addTaskTitleTextView)
+
+        selectedUnitTextView =
+            findViewById(R.id.selectedUnitTextView)
+
         titleEditText =
             findViewById(R.id.taskTitleEditText)
 
         courseEditText =
             findViewById(R.id.courseEditText)
-
-        if (selectedUnitCode.isNotEmpty()) {
-            courseEditText.setText(selectedUnitCode)
-            courseEditText.isEnabled = false
-        }
 
         deadlineEditText =
             findViewById(R.id.deadlineEditText)
@@ -121,11 +134,15 @@ class AddTaskActivity : AppCompatActivity() {
         cancelButton =
             findViewById(R.id.cancelButton)
 
+        configureUnitMode()
         setupDeadlinePicker()
 
         if (editingTaskId == null) {
             deleteTaskButton.visibility = View.GONE
         } else {
+            addTaskTitleTextView.text =
+                getString(R.string.edit_task_title)
+
             saveTaskButton.text =
                 getString(R.string.save_changes_button)
 
@@ -142,6 +159,43 @@ class AddTaskActivity : AppCompatActivity() {
 
         cancelButton.setOnClickListener {
             showDiscardChangesDialog()
+        }
+    }
+
+    /**
+     * Configures the screen when the task is being added inside a unit.
+     *
+     * If a unit was passed through Intent extras, this method shows
+     * the selected unit label, fills the course field and prevents
+     * the user from changing the course manually.
+     */
+    private fun configureUnitMode() {
+        if (selectedUnitId.isNotEmpty() && selectedUnitCode.isNotEmpty()) {
+            addTaskTitleTextView.text =
+                getString(R.string.add_assignment_title)
+
+            val unitDisplay =
+                if (selectedUnitName.isNotEmpty()) {
+                    getString(
+                        R.string.adding_assignment_to_unit,
+                        selectedUnitCode,
+                        selectedUnitName
+                    )
+                } else {
+                    getString(
+                        R.string.adding_assignment_to_course,
+                        selectedUnitCode
+                    )
+                }
+
+            selectedUnitTextView.text =
+                unitDisplay
+
+            selectedUnitTextView.visibility =
+                View.VISIBLE
+
+            courseEditText.setText(selectedUnitCode)
+            courseEditText.isEnabled = false
         }
     }
 
@@ -230,6 +284,9 @@ class AddTaskActivity : AppCompatActivity() {
     private fun loadTaskForEditing(taskId: String) {
         taskViewModel.getTaskById(taskId) { task ->
             if (task != null) {
+                selectedUnitId =
+                    task.unitId
+
                 titleEditText.setText(task.title)
                 courseEditText.setText(task.course)
                 deadlineEditText.setText(task.deadline)
@@ -340,10 +397,9 @@ class AddTaskActivity : AppCompatActivity() {
             coordinates.first == 0.0 &&
             coordinates.second == 0.0
         ) {
-
             Toast.makeText(
                 this,
-                "Location could not be found. Task will be saved without map coordinates.",
+                getString(R.string.location_saved_without_map_message),
                 Toast.LENGTH_LONG
             ).show()
         }
@@ -353,6 +409,7 @@ class AddTaskActivity : AppCompatActivity() {
             userEmail = userEmail,
             title = title,
             course = course,
+            unitId = selectedUnitId,
             deadline = deadline,
             weight = weight,
             estimatedHours = estimatedHours,
@@ -417,9 +474,7 @@ class AddTaskActivity : AppCompatActivity() {
      * later be displayed on Google Maps.
      *
      * To improve search accuracy, Australia is automatically appended
-     * to the search query. This helps resolve common educational
-     * locations such as CQU Sydney, Parramatta Library and other
-     * Australian venues.
+     * to the search query.
      *
      * If the location cannot be resolved, the method returns
      * (0.0, 0.0).
@@ -432,13 +487,9 @@ class AddTaskActivity : AppCompatActivity() {
     ): Pair<Double, Double> {
 
         return try {
-
             val geocoder =
                 Geocoder(this, Locale.ENGLISH)
 
-            /**
-             * Append Australia to improve geocoding accuracy.
-             */
             val searchQuery =
                 "$locationName, Australia"
 
@@ -449,21 +500,16 @@ class AddTaskActivity : AppCompatActivity() {
                 )
 
             if (!addresses.isNullOrEmpty()) {
-
                 Pair(
                     addresses[0].latitude,
                     addresses[0].longitude
                 )
-
             } else {
-
                 Pair(0.0, 0.0)
             }
 
         } catch (e: Exception) {
-
             e.printStackTrace()
-
             Pair(0.0, 0.0)
         }
     }

@@ -115,6 +115,7 @@ class UnitDetailActivity : AppCompatActivity() {
 
             intent.putExtra("unit_id", unitId)
             intent.putExtra("unit_code", unitCode)
+            intent.putExtra("unit_name", unitName)
 
             startActivity(intent)
         }

@@ -12,12 +12,25 @@
         android:padding="24dp">
 
         <TextView
+            android:id="@+id/addTaskTitleTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/add_task_title"
             android:textColor="#0B5FA5"
             android:textSize="28sp"
             android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/selectedUnitTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="#DDE6F2"
+            android:padding="12dp"
+            android:textColor="#0B5FA5"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
 
         <EditText
             android:id="@+id/taskTitleEditText"
@@ -40,8 +53,10 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_marginTop="10dp"
+            android:clickable="true"
+            android:focusable="false"
             android:hint="@string/deadline_hint"
-            android:inputType="datetime" />
+            android:inputType="none" />
 
         <EditText
             android:id="@+id/weightEditText"
@@ -97,7 +112,8 @@
             android:layout_height="56dp"
             android:layout_marginTop="10dp"
             android:backgroundTint="#616161"
-            android:text="@string/cancel_button" />
+            android:text="@string/cancel_button"
+            android:textColor="#FFFFFF" />
 
     </LinearLayout>
 </ScrollView>

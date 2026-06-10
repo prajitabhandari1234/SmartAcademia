@@ -300,4 +300,8 @@
     <string name="unit_deleted_message">Unit deleted successfully</string>
     <string name="delete_unit_title">Delete Unit?</string>
     <string name="delete_unit_message">Deleting this unit will also delete assignments linked to it.</string>
+    <string name="add_assignment_title">Add Assignment</string>
+    <string name="adding_assignment_to_unit">Adding assignment to %1$s - %2$s</string>
+    <string name="adding_assignment_to_course">Adding assignment to %1$s</string>
+    <string name="location_saved_without_map_message">Location could not be found. Task will be saved without map coordinates.</string>
 </resources>
