@@ -67,12 +67,13 @@ interface TaskDao {
     @Query(
         "SELECT * FROM tasks " +
                 "WHERE userEmail = :email " +
-                "AND unitId = :unitId " +
+                "AND (unitId = :unitId OR course = :unitCode) " +
                 "ORDER BY priorityScore DESC"
     )
     fun getTasksForUnit(
         email: String,
-        unitId: String
+        unitId: String,
+        unitCode: String
     ): LiveData<List<Task>>
 
     /**

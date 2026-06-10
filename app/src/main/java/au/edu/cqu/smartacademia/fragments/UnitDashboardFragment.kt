@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import au.edu.cqu.smartacademia.R
 import au.edu.cqu.smartacademia.activities.AddUnitActivity
+import au.edu.cqu.smartacademia.activities.UnitDetailActivity
 import au.edu.cqu.smartacademia.adapter.UnitAdapter
 import au.edu.cqu.smartacademia.database.CourseUnit
 import au.edu.cqu.smartacademia.database.Task
@@ -61,8 +62,16 @@ class UnitDashboardFragment : Fragment() {
         unitAdapter = UnitAdapter(
             units = emptyList(),
             tasks = emptyList(),
-            onUnitClick = { _: CourseUnit ->
-                // Unit detail screen will be implemented in next phase.
+            onUnitClick = { unit: CourseUnit ->
+                val intent =
+                    Intent(requireContext(), UnitDetailActivity::class.java)
+
+                intent.putExtra("unit_id", unit.id)
+                intent.putExtra("unit_code", unit.unitCode)
+                intent.putExtra("unit_name", unit.unitName)
+                intent.putExtra("pass_mark", unit.passMark)
+
+                startActivity(intent)
             },
             onEditClick = { unit: CourseUnit ->
                 val intent =

@@ -46,6 +46,10 @@
             android:name=".activities.AddUnitActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".activities.UnitDetailActivity"
+            android:exported="false" />
+
         <receiver
             android:name=".utils.ReminderReceiver"
             android:exported="false" />

@@ -47,11 +47,13 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
      */
     fun getTasksForUnit(
         email: String,
-        unitId: String
+        unitId: String,
+        unitCode: String
     ): LiveData<List<Task>> {
         return repository.getTasksForUnit(
             email,
-            unitId
+            unitId,
+            unitCode
         )
     }
 

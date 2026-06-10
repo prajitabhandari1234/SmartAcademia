@@ -50,6 +50,8 @@ class AddTaskActivity : AppCompatActivity() {
     private lateinit var saveTaskButton: Button
     private lateinit var deleteTaskButton: Button
     private lateinit var cancelButton: Button
+    private var selectedUnitId: String = ""
+    private var selectedUnitCode: String = ""
 
     /**
      * Creates and initialises the Add/Edit Task screen.
@@ -78,11 +80,22 @@ class AddTaskActivity : AppCompatActivity() {
         editingTaskId =
             intent.getStringExtra("task_id")
 
+        selectedUnitId =
+            intent.getStringExtra("unit_id") ?: ""
+
+        selectedUnitCode =
+            intent.getStringExtra("unit_code") ?: ""
+
         titleEditText =
             findViewById(R.id.taskTitleEditText)
 
         courseEditText =
             findViewById(R.id.courseEditText)
+
+        if (selectedUnitCode.isNotEmpty()) {
+            courseEditText.setText(selectedUnitCode)
+            courseEditText.isEnabled = false
+        }
 
         deadlineEditText =
             findViewById(R.id.deadlineEditText)

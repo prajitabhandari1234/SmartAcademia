@@ -30,9 +30,14 @@ class TaskRepository(private val taskDao: TaskDao) {
      */
     fun getTasksForUnit(
         email: String,
-        unitId: String
+        unitId: String,
+        unitCode: String
     ): LiveData<List<Task>> {
-        return taskDao.getTasksForUnit(email, unitId)
+        return taskDao.getTasksForUnit(
+            email,
+            unitId,
+            unitCode
+        )
     }
 
     /**
