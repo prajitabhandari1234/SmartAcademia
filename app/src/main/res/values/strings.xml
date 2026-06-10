@@ -304,4 +304,5 @@
     <string name="adding_assignment_to_unit">Adding assignment to %1$s - %2$s</string>
     <string name="adding_assignment_to_course">Adding assignment to %1$s</string>
     <string name="location_saved_without_map_message">Location could not be found. Task will be saved without map coordinates.</string>
+    <string name="grade_progress_title">Grade Progress</string>
 </resources>

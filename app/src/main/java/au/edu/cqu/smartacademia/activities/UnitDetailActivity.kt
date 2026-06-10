@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.SeekBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -18,9 +19,8 @@ import au.edu.cqu.smartacademia.viewmodel.TaskViewModel
 /**
  * Activity that displays details for one selected university unit.
  *
- * Shows all assignments linked to the unit, grade progress,
- * pass/fail status and allows the student to add new assignments
- * directly inside the selected unit.
+ * Shows assignments linked to the unit, grade progress,
+ * pass/fail status and a what-if grade projection.
  */
 class UnitDetailActivity : AppCompatActivity() {
 
@@ -30,6 +30,8 @@ class UnitDetailActivity : AppCompatActivity() {
     private lateinit var unitTitleTextView: TextView
     private lateinit var unitProgressTextView: TextView
     private lateinit var unitStatusTextView: TextView
+    private lateinit var whatIfResultTextView: TextView
+    private lateinit var remainingScoreSeekBar: SeekBar
     private lateinit var addAssignmentButton: Button
     private lateinit var backButton: Button
     private lateinit var assignmentRecyclerView: RecyclerView
@@ -39,6 +41,7 @@ class UnitDetailActivity : AppCompatActivity() {
     private var unitCode: String = ""
     private var unitName: String = ""
     private var passMark: Int = 50
+    private var latestTasks: List<Task> = emptyList()
 
     /**
      * Creates the unit detail screen.
@@ -127,6 +130,8 @@ class UnitDetailActivity : AppCompatActivity() {
         observeUnitTasks()
     }
 
+
+
     /**
      * Observes assignments linked to this unit.
      *
@@ -138,46 +143,53 @@ class UnitDetailActivity : AppCompatActivity() {
             userEmail,
             unitId,
             unitCode
-        )
-            .observe(this) { tasks ->
-                val sortedTasks =
-                    ScheduleGenerator.sortBySmartPriority(tasks)
+        ).observe(this) { tasks ->
+            latestTasks = tasks
 
-                taskAdapter.updateTasks(sortedTasks)
-                updateGradeProgress(tasks)
-            }
+            val sortedTasks =
+                ScheduleGenerator.sortBySmartPriority(tasks)
+
+            taskAdapter.updateTasks(sortedTasks)
+            updateGradeProgress(tasks)
+        }
     }
 
     /**
-     * Calculates secured weight, pending weight and pass status.
+     * Calculates completed weight, remaining weight and pass status.
      *
      * @param tasks Assignments linked to the selected unit.
      */
     private fun updateGradeProgress(tasks: List<Task>) {
-        val securedWeight =
+        val completedWeight =
             tasks.filter { it.completed }
                 .sumOf { it.weight }
 
-        val pendingWeight =
+        val remainingWeight =
             tasks.filter { !it.completed }
                 .sumOf { it.weight }
 
-        val needed =
-            (passMark - securedWeight).coerceAtLeast(0)
+        val totalTrackedWeight =
+            completedWeight + remainingWeight
+
+        val neededToPass =
+            (passMark - completedWeight).coerceAtLeast(0)
 
         unitProgressTextView.text =
-            "Secured: $securedWeight% · Pending: $pendingWeight% · Pass Mark: $passMark%"
+            "Completed Weight: $completedWeight%\n" +
+                    "Remaining Weight: $remainingWeight%\n" +
+                    "Tracked Assessment Weight: $totalTrackedWeight%\n" +
+                    "Pass Mark: $passMark%"
 
         unitStatusTextView.text =
             when {
-                securedWeight >= passMark ->
+                completedWeight >= passMark ->
                     "Status: Passing"
 
-                securedWeight + pendingWeight < passMark ->
-                    "Status: Cannot reach pass mark"
+                completedWeight + remainingWeight < passMark ->
+                    "Status: Cannot reach pass mark with current tracked assessments"
 
                 else ->
-                    "Status: Need $needed% more to pass"
+                    "Status: Need $neededToPass% more completed weight to pass"
             }
     }
 }

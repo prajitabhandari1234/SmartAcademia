@@ -15,10 +15,20 @@
         android:textStyle="bold" />
 
     <TextView
+        android:id="@+id/gradeProgressTitleTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:text="@string/grade_progress_title"
+        android:textColor="#0B5FA5"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
         android:id="@+id/unitProgressTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="8dp"
         android:background="#DDE6F2"
         android:padding="12dp"
         android:textColor="#111111"
@@ -40,7 +50,7 @@
         android:layout_width="match_parent"
         android:layout_height="52dp"
         android:layout_marginTop="16dp"
-        android:text="Add Assignment"
+        android:text="@string/add_assignment_title"
         android:textAllCaps="false" />
 
     <androidx.recyclerview.widget.RecyclerView
