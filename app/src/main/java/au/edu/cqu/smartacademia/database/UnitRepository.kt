@@ -3,70 +3,42 @@ package au.edu.cqu.smartacademia.database
 import androidx.lifecycle.LiveData
 
 /**
- * Repository responsible for managing Unit data.
- *
- * Acts as a bridge between UnitViewModel and UnitDao.
+ * Repository for managing university units.
  */
 class UnitRepository(
     private val unitDao: UnitDao
 ) {
 
     /**
-     * Returns all units belonging to a user.
-     *
-     * @param email Logged-in user email.
-     * @return LiveData list of units.
+     * Returns all units for a user.
      */
-    fun getUnitsForUser(email: String): LiveData<List<Unit>> {
+    fun getUnitsForUser(email: String): LiveData<List<CourseUnit>> {
         return unitDao.getUnitsForUser(email)
     }
 
     /**
-     * Inserts a new unit.
-     *
-     * @param unit Unit to insert.
+     * Inserts a unit.
      */
-    suspend fun insertUnit(unit: Unit) {
+    suspend fun insertUnit(unit: CourseUnit) {
         unitDao.insertUnit(unit)
     }
 
     /**
-     * Updates an existing unit.
-     *
-     * @param unit Updated unit.
+     * Updates a unit.
      */
-    suspend fun updateUnit(unit: Unit) {
+    suspend fun updateUnit(unit: CourseUnit) {
         unitDao.updateUnit(unit)
     }
 
     /**
-     * Retrieves a unit by ID.
-     *
-     * @param unitId Unit identifier.
-     * @return Matching unit or null.
+     * Returns one unit by ID.
      */
-    suspend fun getUnitById(unitId: String): Unit? {
+    suspend fun getUnitById(unitId: String): CourseUnit? {
         return unitDao.getUnitById(unitId)
     }
 
     /**
-     * Retrieves a unit by unit code.
-     *
-     * @param email Logged-in user email.
-     * @param unitCode Unit code.
-     * @return Matching unit or null.
-     */
-    suspend fun getUnitByCode(
-        email: String,
-        unitCode: String
-    ): Unit? {
-        return unitDao.getUnitByCode(email, unitCode)
-    }
-
-    /**
-     * Deletes a unit by ID.
-     *
-     * @param unitId Unit identifier.
+     * Deletes one unit by ID.
      */
     suspend fun deleteUnitById(unitId: String) {
         unitDao.deleteUnitById(unitId)

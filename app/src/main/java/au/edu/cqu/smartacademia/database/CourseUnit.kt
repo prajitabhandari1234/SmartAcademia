@@ -6,15 +6,13 @@ import java.io.Serializable
 import java.util.UUID
 
 /**
- * Unit entity used by the SmartAcademia Room database.
+ * Entity representing one university unit or course.
  *
- * Represents one university unit or subject, such as
- * COIT13234 Mobile Software Development.
- *
- * Each unit can contain multiple assessment tasks.
+ * Example:
+ * COIT13234 - Mobile Software Development
  */
 @Entity(tableName = "units")
-data class Unit(
+data class CourseUnit(
 
     /**
      * Unique unit identifier.
@@ -36,7 +34,7 @@ data class Unit(
     var unitCode: String,
 
     /**
-     * Full unit name.
+     * Unit name.
      *
      * Example:
      * Mobile Software Development
@@ -44,7 +42,7 @@ data class Unit(
     var unitName: String,
 
     /**
-     * Minimum percentage required to pass the unit.
+     * Minimum percentage required to pass this unit.
      */
     var passMark: Int = 50
 

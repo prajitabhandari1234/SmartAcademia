@@ -12,26 +12,20 @@ import kotlinx.coroutines.launch
 /**
  * ViewModel for managing academic task data.
  *
- * Acts as the connection between the UI layer and [TaskRepository].
- *
- * Supports Assignment 3 requirements:
- * - ViewModel architecture.
- * - LiveData observation.
- * - Room database access.
- * - RecyclerView task updates.
- * - HTTP task fetching.
- * - Task creation, editing, deletion and completion.
+ * Acts as the connection between the UI layer and TaskRepository.
  */
 class TaskViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository: TaskRepository
 
     init {
-        val taskDao = SmartAcademiaDatabase
-            .getDatabase(application)
-            .taskDao()
+        val taskDao =
+            SmartAcademiaDatabase
+                .getDatabase(application)
+                .taskDao()
 
-        repository = TaskRepository(taskDao)
+        repository =
+            TaskRepository(taskDao)
     }
 
     /**
@@ -45,7 +39,24 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     /**
-     * Returns only active incomplete tasks for a user.
+     * Returns tasks linked to a selected unit.
+     *
+     * @param email Logged-in user email.
+     * @param unitId Selected unit ID.
+     * @return LiveData list of unit tasks.
+     */
+    fun getTasksForUnit(
+        email: String,
+        unitId: String
+    ): LiveData<List<Task>> {
+        return repository.getTasksForUnit(
+            email,
+            unitId
+        )
+    }
+
+    /**
+     * Returns only active incomplete tasks.
      *
      * @param email Logged-in user email.
      * @return LiveData list of active tasks.
@@ -55,7 +66,7 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     /**
-     * Returns completed tasks for a user.
+     * Returns completed tasks.
      *
      * @param email Logged-in user email.
      * @return LiveData list of completed tasks.
@@ -78,8 +89,6 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
     /**
      * Updates an existing task.
      *
-     * Used for editing tasks and marking tasks as completed.
-     *
      * @param task Updated task.
      */
     fun updateTask(task: Task) {
@@ -101,8 +110,6 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
 
     /**
      * Retrieves a task by ID.
-     *
-     * Used when opening the edit task screen.
      *
      * @param taskId Task identifier.
      * @param result Callback returning the matching task or null.
@@ -128,8 +135,18 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     /**
-     * Fetches remote task data from the API
-     * and saves new tasks into the Room database.
+     * Deletes all tasks linked to a selected unit.
+     *
+     * @param unitId Selected unit ID.
+     */
+    fun deleteTasksForUnit(unitId: String) {
+        viewModelScope.launch {
+            repository.deleteTasksForUnit(unitId)
+        }
+    }
+
+    /**
+     * Fetches remote task data from the API.
      *
      * @param userEmail Logged-in user email.
      */

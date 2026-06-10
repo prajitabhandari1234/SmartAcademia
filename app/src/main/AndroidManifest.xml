@@ -42,6 +42,9 @@
         <activity
             android:name=".activities.RegenerateScheduleActivity"
             android:exported="false" />
+        <activity
+            android:name=".activities.AddUnitActivity"
+            android:exported="false" />
 
         <receiver
             android:name=".utils.ReminderReceiver"

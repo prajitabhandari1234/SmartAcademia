@@ -4,16 +4,13 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import au.edu.cqu.smartacademia.database.CourseUnit
 import au.edu.cqu.smartacademia.database.SmartAcademiaDatabase
-import au.edu.cqu.smartacademia.database.Unit
 import au.edu.cqu.smartacademia.database.UnitRepository
 import kotlinx.coroutines.launch
 
 /**
- * ViewModel for managing university unit data.
- *
- * Connects the UI layer to UnitRepository and keeps
- * unit data lifecycle-aware.
+ * ViewModel for managing university units.
  */
 class UnitViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -29,20 +26,15 @@ class UnitViewModel(application: Application) : AndroidViewModel(application) {
 
     /**
      * Returns all units for the logged-in user.
-     *
-     * @param email Logged-in user email.
-     * @return LiveData list of units.
      */
-    fun getUnitsForUser(email: String): LiveData<List<Unit>> {
+    fun getUnitsForUser(email: String): LiveData<List<CourseUnit>> {
         return repository.getUnitsForUser(email)
     }
 
     /**
      * Inserts a new unit.
-     *
-     * @param unit Unit to insert.
      */
-    fun insertUnit(unit: Unit) {
+    fun insertUnit(unit: CourseUnit) {
         viewModelScope.launch {
             repository.insertUnit(unit)
         }
@@ -50,19 +42,27 @@ class UnitViewModel(application: Application) : AndroidViewModel(application) {
 
     /**
      * Updates an existing unit.
-     *
-     * @param unit Updated unit.
      */
-    fun updateUnit(unit: Unit) {
+    fun updateUnit(unit: CourseUnit) {
         viewModelScope.launch {
             repository.updateUnit(unit)
         }
     }
 
     /**
+     * Loads one unit by ID.
+     */
+    fun getUnitById(
+        unitId: String,
+        result: (CourseUnit?) -> kotlin.Unit
+    ) {
+        viewModelScope.launch {
+            result(repository.getUnitById(unitId))
+        }
+    }
+
+    /**
      * Deletes a unit by ID.
-     *
-     * @param unitId Unit identifier.
      */
     fun deleteUnitById(unitId: String) {
         viewModelScope.launch {

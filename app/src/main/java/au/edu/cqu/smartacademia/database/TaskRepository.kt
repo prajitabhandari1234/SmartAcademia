@@ -8,13 +8,6 @@ import au.edu.cqu.smartacademia.utils.ScheduleGenerator
  * Repository responsible for managing task data.
  *
  * Acts as a bridge between the ViewModel and the Room database.
- *
- * Responsibilities:
- * - Retrieve task data from Room.
- * - Insert, update and delete tasks.
- * - Load seed data when the database is empty.
- * - Fetch task data from a remote JSON server.
- * - Calculate task priority scores.
  */
 class TaskRepository(private val taskDao: TaskDao) {
 
@@ -29,7 +22,21 @@ class TaskRepository(private val taskDao: TaskDao) {
     }
 
     /**
-     * Returns active (incomplete) tasks.
+     * Returns tasks belonging to a selected unit.
+     *
+     * @param email User email.
+     * @param unitId Selected unit ID.
+     * @return LiveData list of tasks inside the unit.
+     */
+    fun getTasksForUnit(
+        email: String,
+        unitId: String
+    ): LiveData<List<Task>> {
+        return taskDao.getTasksForUnit(email, unitId)
+    }
+
+    /**
+     * Returns active incomplete tasks.
      *
      * @param email User email.
      * @return LiveData list of active tasks.
@@ -54,20 +61,23 @@ class TaskRepository(private val taskDao: TaskDao) {
      * @param task Task to insert.
      */
     suspend fun insertTask(task: Task) {
-        task.priorityScore = ScheduleGenerator.calculatePriorityScore(task)
+        task.priorityScore =
+            ScheduleGenerator.calculatePriorityScore(task)
+
         taskDao.insertTask(task)
     }
 
     /**
-     * Inserts multiple tasks after calculating
-     * priority scores for each task.
+     * Inserts multiple tasks after calculating priority scores.
      *
      * @param tasks List of tasks.
      */
     suspend fun insertTasks(tasks: List<Task>) {
         tasks.forEach {
-            it.priorityScore = ScheduleGenerator.calculatePriorityScore(it)
+            it.priorityScore =
+                ScheduleGenerator.calculatePriorityScore(it)
         }
+
         taskDao.insertTasks(tasks)
     }
 
@@ -77,6 +87,9 @@ class TaskRepository(private val taskDao: TaskDao) {
      * @param task Updated task.
      */
     suspend fun updateTask(task: Task) {
+        task.priorityScore =
+            ScheduleGenerator.calculatePriorityScore(task)
+
         taskDao.updateTask(task)
     }
 
@@ -100,19 +113,23 @@ class TaskRepository(private val taskDao: TaskDao) {
     }
 
     /**
-     * Loads sample seed data when the database is empty.
+     * Deletes all tasks linked to a selected unit.
      *
-     * This ensures the application contains initial
-     * data when first launched.
+     * @param unitId Selected unit ID.
+     */
+    suspend fun deleteTasksForUnit(unitId: String) {
+        taskDao.deleteTasksForUnit(unitId)
+    }
+
+    /**
+     * Loads sample seed data when the database is empty.
      *
      * @param userEmail Logged-in user email.
      */
     suspend fun loadSeedDataIfEmpty(userEmail: String) {
-
         if (taskDao.getTaskCount() == 0) {
 
             val seedTasks = listOf(
-
                 Task(
                     userEmail = userEmail,
                     title = "Assignment 2 Portfolio",
@@ -122,6 +139,7 @@ class TaskRepository(private val taskDao: TaskDao) {
                     estimatedHours = 5,
                     notes = "Complete mobile app design portfolio",
                     priorityScore = 90,
+                    locationName = "CQU Sydney",
                     lat = -33.8688,
                     lon = 151.2093
                 ),
@@ -135,6 +153,7 @@ class TaskRepository(private val taskDao: TaskDao) {
                     estimatedHours = 10,
                     notes = "Build SmartAcademia prototype",
                     priorityScore = 95,
+                    locationName = "CQU Sydney",
                     lat = -33.8858,
                     lon = 151.2073
                 ),
@@ -148,6 +167,7 @@ class TaskRepository(private val taskDao: TaskDao) {
                     estimatedHours = 2,
                     notes = "Revise distributed systems concepts",
                     priorityScore = 70,
+                    locationName = "Town Hall Sydney",
                     lat = -33.8731,
                     lon = 151.2065
                 )
@@ -166,14 +186,13 @@ class TaskRepository(private val taskDao: TaskDao) {
      * @param userEmail Logged-in user email.
      */
     suspend fun fetchTasksFromApi(userEmail: String) {
-
         try {
-
-            val response = RetrofitInstance.api.getTasks()
+            val response =
+                RetrofitInstance.api.getTasks()
 
             if (response.isSuccessful) {
-
-                val apiTasks = response.body() ?: emptyList()
+                val apiTasks =
+                    response.body() ?: emptyList()
 
                 apiTasks.forEach { apiTask ->
 
@@ -184,7 +203,6 @@ class TaskRepository(private val taskDao: TaskDao) {
                         )
 
                     if (existingTask == null) {
-
                         val task = Task(
                             userEmail = userEmail,
                             title = apiTask.title,
@@ -206,7 +224,6 @@ class TaskRepository(private val taskDao: TaskDao) {
             }
 
         } catch (e: Exception) {
-
             e.printStackTrace()
         }
     }

@@ -281,4 +281,23 @@
     <string name="logout_message">Are you sure you want to logout?</string>
     <string name="logout_confirm_message">Are you sure you want to logout?</string>
     <string name="logout_button">Logout</string>
+
+    <!-- Units -->
+    <string name="my_units_title">My Units</string>
+    <string name="my_units_subtitle">Add your university units and track pass progress</string>
+    <string name="add_unit_button">Add Unit</string>
+    <string name="add_unit_title">Add Unit</string>
+    <string name="edit_unit_title">Edit Unit</string>
+    <string name="unit_code_hint">Unit code e.g. COIT13234</string>
+    <string name="unit_name_hint">Unit name e.g. Mobile Software Development</string>
+    <string name="pass_mark_hint">Pass mark e.g. 50</string>
+    <string name="save_unit_button">Save Unit</string>
+    <string name="delete_unit_button">Delete Unit</string>
+    <string name="edit_unit_button">Edit Unit</string>
+    <string name="invalid_pass_mark_message">Pass mark must be between 1 and 100.</string>
+    <string name="unit_saved_message">Unit saved successfully</string>
+    <string name="unit_updated_message">Unit updated successfully</string>
+    <string name="unit_deleted_message">Unit deleted successfully</string>
+    <string name="delete_unit_title">Delete Unit?</string>
+    <string name="delete_unit_message">Deleting this unit will also delete assignments linked to it.</string>
 </resources>

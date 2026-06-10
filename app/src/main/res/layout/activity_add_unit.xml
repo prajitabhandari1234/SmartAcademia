@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#EAF4FF"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <TextView
+            android:id="@+id/addUnitTitleTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add_unit_title"
+            android:textColor="#0B5FA5"
+            android:textSize="28sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/unitCodeEditText"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="20dp"
+            android:hint="@string/unit_code_hint"
+            android:inputType="textCapCharacters" />
+
+        <EditText
+            android:id="@+id/unitNameEditText"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="12dp"
+            android:hint="@string/unit_name_hint"
+            android:inputType="textCapWords" />
+
+        <EditText
+            android:id="@+id/passMarkEditText"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="12dp"
+            android:hint="@string/pass_mark_hint"
+            android:inputType="number" />
+
+        <Button
+            android:id="@+id/saveUnitButton"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="24dp"
+            android:text="@string/save_unit_button" />
+
+        <Button
+            android:id="@+id/deleteUnitButton"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="12dp"
+            android:text="@string/delete_unit_button" />
+
+        <Button
+            android:id="@+id/cancelUnitButton"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="12dp"
+            android:backgroundTint="#616161"
+            android:text="@string/cancel_button"
+            android:textColor="#FFFFFF" />
+
+    </LinearLayout>
+</ScrollView>

@@ -8,67 +8,41 @@ import androidx.room.Query
 import androidx.room.Update
 
 /**
- * Data Access Object for managing Unit records.
+ * Data Access Object for managing university units.
  */
 @Dao
 interface UnitDao {
 
     /**
-     * Inserts a unit into the database.
+     * Inserts a new unit.
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertUnit(unit: Unit)
+    suspend fun insertUnit(unit: CourseUnit)
 
     /**
      * Updates an existing unit.
      */
     @Update
-    suspend fun updateUnit(unit: Unit)
+    suspend fun updateUnit(unit: CourseUnit)
 
     /**
      * Returns all units for the logged-in user.
-     *
-     * @param email Logged-in user email.
-     * @return LiveData list of units.
      */
     @Query(
         "SELECT * FROM units " +
                 "WHERE userEmail = :email " +
                 "ORDER BY unitCode ASC"
     )
-    fun getUnitsForUser(email: String): LiveData<List<Unit>>
+    fun getUnitsForUser(email: String): LiveData<List<CourseUnit>>
 
     /**
-     * Finds a unit by its unique ID.
-     *
-     * @param unitId Unit identifier.
-     * @return Matching unit or null.
+     * Returns one unit by ID.
      */
     @Query("SELECT * FROM units WHERE id = :unitId LIMIT 1")
-    suspend fun getUnitById(unitId: String): Unit?
+    suspend fun getUnitById(unitId: String): CourseUnit?
 
     /**
-     * Finds a unit using its unit code.
-     *
-     * @param email Logged-in user email.
-     * @param unitCode Unit code.
-     * @return Matching unit or null.
-     */
-    @Query(
-        "SELECT * FROM units " +
-                "WHERE userEmail = :email " +
-                "AND unitCode = :unitCode " +
-                "LIMIT 1"
-    )
-    suspend fun getUnitByCode(
-        email: String,
-        unitCode: String
-    ): Unit?
-
-    /**
-     * Deletes a unit by ID.
-     *
-     * @param unitId Unit identifier.
+     * Deletes one unit by ID.
      */
     @Query("DELETE FROM units WHERE id = :unitId")
     suspend fun deleteUnitById(unitId: String)
