@@ -40,14 +40,28 @@
                     android:textColor="#0B5FA5"
                     android:textSize="14sp" />
             </LinearLayout>
+        </LinearLayout>
 
-            <Button
-                android:id="@+id/logoutButton"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/logout_button"
-                android:textAllCaps="false" />
-        </LinearLayout>
+                android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/profileButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Profile"
+                    android:textAllCaps="false"/>
+
+                <Button
+                    android:id="@+id/logoutButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Logout"
+                    android:textAllCaps="false"/>
+            </LinearLayout>
 
         <GridLayout
             android:layout_width="match_parent"
@@ -107,6 +121,26 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="My Academic Progress"
+            android:textColor="#0B5FA5"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/unitSummaryTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="#DDE6F2"
+            android:padding="16dp"
+            android:text="Loading units..."
+            android:textColor="#111111"
+            android:textSize="15sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="22dp"
             android:text="@string/todays_study_plan"
             android:textColor="#0B5FA5"
@@ -118,8 +152,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:background="#A9CBE8"
-            android:minHeight="120dp"
+            android:background="#DDEEFF"
+            android:minHeight="140dp"
             android:padding="16dp"
             android:text="@string/no_tasks"
             android:textColor="#111111"

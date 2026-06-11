@@ -39,10 +39,24 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     /**
+     * Returns only tasks that are linked to any unit.
+     *
+     * This is used by the Home dashboard so old demo tasks
+     * or unlinked tasks do not appear in the study plan.
+     *
+     * @param email Logged-in user email.
+     * @return LiveData list of unit-linked tasks.
+     */
+    fun getTasksLinkedToUnits(email: String): LiveData<List<Task>> {
+        return repository.getTasksLinkedToUnits(email)
+    }
+
+    /**
      * Returns tasks linked to a selected unit.
      *
      * @param email Logged-in user email.
      * @param unitId Selected unit ID.
+     * @param unitCode Selected unit code.
      * @return LiveData list of unit tasks.
      */
     fun getTasksForUnit(

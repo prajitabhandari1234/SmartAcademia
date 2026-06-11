@@ -22,10 +22,27 @@ class TaskRepository(private val taskDao: TaskDao) {
     }
 
     /**
+     * Returns only tasks linked to any unit.
+     *
+     * Used by the Home dashboard so old unlinked demo tasks
+     * do not appear in the study plan.
+     *
+     * @param email User email.
+     * @return LiveData list of unit-linked tasks.
+     */
+    fun getTasksLinkedToUnits(email: String): LiveData<List<Task>> {
+        return taskDao.getTasksLinkedToUnits(email)
+    }
+
+    /**
      * Returns tasks belonging to a selected unit.
+     *
+     * Supports both new unitId-linked assignments and older
+     * course-code based assignments.
      *
      * @param email User email.
      * @param unitId Selected unit ID.
+     * @param unitCode Selected unit code.
      * @return LiveData list of tasks inside the unit.
      */
     fun getTasksForUnit(
@@ -127,59 +144,15 @@ class TaskRepository(private val taskDao: TaskDao) {
     }
 
     /**
-     * Loads sample seed data when the database is empty.
+     * Loads seed data only when needed.
+     *
+     * For portfolio use, this is intentionally kept empty
+     * so demo tasks do not appear for real users.
      *
      * @param userEmail Logged-in user email.
      */
     suspend fun loadSeedDataIfEmpty(userEmail: String) {
-        if (taskDao.getTaskCount() == 0) {
-
-            val seedTasks = listOf(
-                Task(
-                    userEmail = userEmail,
-                    title = "Assignment 2 Portfolio",
-                    course = "COIT13234",
-                    deadline = "2026-05-15 23:45",
-                    weight = 30,
-                    estimatedHours = 5,
-                    notes = "Complete mobile app design portfolio",
-                    priorityScore = 90,
-                    locationName = "CQU Sydney",
-                    lat = -33.8688,
-                    lon = 151.2093
-                ),
-
-                Task(
-                    userEmail = userEmail,
-                    title = "Assignment 3 Final Project",
-                    course = "COIT13234",
-                    deadline = "2026-06-05 23:45",
-                    weight = 40,
-                    estimatedHours = 10,
-                    notes = "Build SmartAcademia prototype",
-                    priorityScore = 95,
-                    locationName = "CQU Sydney",
-                    lat = -33.8858,
-                    lon = 151.2073
-                ),
-
-                Task(
-                    userEmail = userEmail,
-                    title = "Weekly Quiz",
-                    course = "COIT13229",
-                    deadline = "2026-05-28 18:00",
-                    weight = 10,
-                    estimatedHours = 2,
-                    notes = "Revise distributed systems concepts",
-                    priorityScore = 70,
-                    locationName = "Town Hall Sydney",
-                    lat = -33.8731,
-                    lon = 151.2065
-                )
-            )
-
-            taskDao.insertTasks(seedTasks)
-        }
+        // Seed data disabled for portfolio-ready behaviour.
     }
 
     /**

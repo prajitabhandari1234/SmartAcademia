@@ -58,11 +58,15 @@ interface TaskDao {
     fun getTasksForUser(email: String): LiveData<List<Task>>
 
     /**
-     * Returns all tasks linked to a selected unit.
+     * Returns tasks linked to a selected unit.
+     *
+     * It checks both unitId and course code so older tasks
+     * with only a course code can still appear inside the unit.
      *
      * @param email Logged-in user email.
      * @param unitId Selected unit ID.
-     * @return LiveData list of tasks inside the unit.
+     * @param unitCode Selected unit code.
+     * @return LiveData list of tasks for the selected unit.
      */
     @Query(
         "SELECT * FROM tasks " +
@@ -75,6 +79,23 @@ interface TaskDao {
         unitId: String,
         unitCode: String
     ): LiveData<List<Task>>
+
+    /**
+     * Returns only tasks that are linked to a unit.
+     *
+     * Used by the Home dashboard to avoid showing
+     * old unlinked demo tasks.
+     *
+     * @param email Logged-in user email.
+     * @return LiveData list of unit-linked tasks.
+     */
+    @Query(
+        "SELECT * FROM tasks " +
+                "WHERE userEmail = :email " +
+                "AND unitId != '' " +
+                "ORDER BY priorityScore DESC"
+    )
+    fun getTasksLinkedToUnits(email: String): LiveData<List<Task>>
 
     /**
      * Deletes all tasks linked to a selected unit.

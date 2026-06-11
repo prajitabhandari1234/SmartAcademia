@@ -14,10 +14,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import au.edu.cqu.smartacademia.R
 import au.edu.cqu.smartacademia.activities.LoginActivity
+import au.edu.cqu.smartacademia.database.CourseUnit
 import au.edu.cqu.smartacademia.database.Task
 import au.edu.cqu.smartacademia.utils.ReminderScheduler
 import au.edu.cqu.smartacademia.utils.ScheduleGenerator
 import au.edu.cqu.smartacademia.viewmodel.TaskViewModel
+import au.edu.cqu.smartacademia.viewmodel.UnitViewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -26,11 +28,14 @@ import java.util.Locale
  * Dashboard fragment displayed as the home screen of SmartAcademia.
  *
  * Shows a personalised greeting, current date, task summary,
- * study plan, upcoming deadlines, reminder control and logout option.
+ * academic progress, study plan, upcoming deadlines,
+ * reminder control, profile shortcut and logout option.
  */
 class DashboardFragment : Fragment() {
 
     private lateinit var taskViewModel: TaskViewModel
+    private lateinit var unitViewModel: UnitViewModel
+
     private var userEmail: String = ""
 
     private lateinit var greetingTextView: TextView
@@ -39,16 +44,26 @@ class DashboardFragment : Fragment() {
     private lateinit var dueTodayCardTextView: TextView
     private lateinit var thisWeekCardTextView: TextView
     private lateinit var completedCardTextView: TextView
+    private lateinit var unitSummaryTextView: TextView
     private lateinit var studyPlanTextView: TextView
     private lateinit var upcomingDeadlinesTextView: TextView
 
     private var latestTasks: List<Task> = emptyList()
+    private var latestUnits: List<CourseUnit> = emptyList()
 
+    /**
+     * Creates and initialises the dashboard screen.
+     *
+     * @param inflater Layout inflater.
+     * @param container Parent view container.
+     * @param savedInstanceState Previous fragment state.
+     * @return Dashboard view.
+     */
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val view =
             inflater.inflate(R.layout.fragment_dashboard, container, false)
 
@@ -70,11 +85,17 @@ class DashboardFragment : Fragment() {
         completedCardTextView =
             view.findViewById(R.id.completedCardTextView)
 
+        unitSummaryTextView =
+            view.findViewById(R.id.unitSummaryTextView)
+
         studyPlanTextView =
             view.findViewById(R.id.studyPlanTextView)
 
         upcomingDeadlinesTextView =
             view.findViewById(R.id.upcomingDeadlinesTextView)
+
+        val profileButton =
+            view.findViewById<Button>(R.id.profileButton)
 
         val logoutButton =
             view.findViewById<Button>(R.id.logoutButton)
@@ -96,11 +117,19 @@ class DashboardFragment : Fragment() {
         taskViewModel =
             ViewModelProvider(this)[TaskViewModel::class.java]
 
-        taskViewModel.getTasksForUser(userEmail)
-            .observe(viewLifecycleOwner) { tasks ->
-                latestTasks = tasks
-                updateDashboard(tasks)
-            }
+        unitViewModel =
+            ViewModelProvider(this)[UnitViewModel::class.java]
+
+        observeTasks()
+        observeUnits()
+
+        profileButton.setOnClickListener {
+            Toast.makeText(
+                requireContext(),
+                "Profile screen coming next",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
 
         logoutButton.setOnClickListener {
             confirmLogout()
@@ -114,10 +143,37 @@ class DashboardFragment : Fragment() {
     }
 
     /**
+     * Observes unit-linked tasks for the logged-in user.
+     */
+    private fun observeTasks() {
+        taskViewModel.getTasksLinkedToUnits(userEmail)
+            .observe(viewLifecycleOwner) { tasks ->
+
+                latestTasks =
+                    tasks
+
+                updateDashboard()
+                updateAcademicProgress()
+            }
+    }
+
+    /**
+     * Observes all units for the logged-in user.
+     */
+    private fun observeUnits() {
+        unitViewModel.getUnitsForUser(userEmail)
+            .observe(viewLifecycleOwner) { units ->
+
+                latestUnits =
+                    units
+
+                updateDashboard()
+                updateAcademicProgress()
+            }
+    }
+
+    /**
      * Updates the greeting and current date/time.
-     *
-     * Greeting changes based on the current time.
-     * The user's first name is read from the login session.
      */
     private fun updateGreetingAndDate() {
         val calendar =
@@ -169,22 +225,47 @@ class DashboardFragment : Fragment() {
     }
 
     /**
-     * Updates dashboard cards, study plan and upcoming deadlines.
+     * Returns only tasks belonging to currently added units.
      *
-     * @param tasks Current list of tasks for the logged-in user.
+     * This prevents old demo tasks or unlinked tasks from appearing
+     * on the Home dashboard.
+     *
+     * @return List of tasks linked to existing units.
      */
-    private fun updateDashboard(tasks: List<Task>) {
+    private fun getDashboardTasks(): List<Task> {
+        if (latestUnits.isEmpty()) {
+            return emptyList()
+        }
+
+        return latestTasks.filter { task ->
+            latestUnits.any { unit ->
+                task.unitId == unit.id ||
+                        task.course.equals(
+                            unit.unitCode,
+                            ignoreCase = true
+                        )
+            }
+        }
+    }
+
+    /**
+     * Updates task summary cards, today's study plan and upcoming deadlines.
+     */
+    private fun updateDashboard() {
+        val dashboardTasks =
+            getDashboardTasks()
+
         val overdue =
-            ScheduleGenerator.countOverdue(tasks)
+            ScheduleGenerator.countOverdue(dashboardTasks)
 
         val dueToday =
-            ScheduleGenerator.countDueToday(tasks)
+            ScheduleGenerator.countDueToday(dashboardTasks)
 
         val thisWeek =
-            ScheduleGenerator.countThisWeek(tasks)
+            ScheduleGenerator.countThisWeek(dashboardTasks)
 
         val completed =
-            tasks.count { it.completed }
+            dashboardTasks.count { it.completed }
 
         overdueCardTextView.text =
             "$overdue\n${getString(R.string.overdue_card)}"
@@ -199,7 +280,7 @@ class DashboardFragment : Fragment() {
             "$completed\n${getString(R.string.completed_card)}"
 
         val activeTasks =
-            ScheduleGenerator.sortBySmartPriority(tasks)
+            ScheduleGenerator.sortBySmartPriority(dashboardTasks)
                 .take(3)
 
         studyPlanTextView.text =
@@ -212,7 +293,7 @@ class DashboardFragment : Fragment() {
             }
 
         val upcomingTasks =
-            tasks.filter {
+            dashboardTasks.filter {
                 !it.completed &&
                         ScheduleGenerator.calculateDaysRemaining(
                             it.deadline
@@ -230,6 +311,7 @@ class DashboardFragment : Fragment() {
                 getString(R.string.no_upcoming_deadlines)
             } else {
                 upcomingTasks.joinToString("\n\n") { task ->
+
                     val days =
                         ScheduleGenerator.calculateDaysRemaining(
                             task.deadline
@@ -251,14 +333,72 @@ class DashboardFragment : Fragment() {
     }
 
     /**
+     * Updates academic progress using current unit and assignment data.
+     */
+    private fun updateAcademicProgress() {
+        if (latestUnits.isEmpty()) {
+            unitSummaryTextView.text =
+                "No units added yet.\nGo to Tasks and add your first unit."
+            return
+        }
+
+        val dashboardTasks =
+            getDashboardTasks()
+
+        val summary =
+            latestUnits.take(3)
+                .joinToString("\n\n") { unit ->
+
+                    val unitTasks =
+                        dashboardTasks.filter {
+                            it.unitId == unit.id ||
+                                    it.course.equals(
+                                        unit.unitCode,
+                                        ignoreCase = true
+                                    )
+                        }
+
+                    val completedWeight =
+                        unitTasks
+                            .filter { it.completed }
+                            .sumOf { it.weight }
+
+                    val pendingWeight =
+                        unitTasks
+                            .filter { !it.completed }
+                            .sumOf { it.weight }
+
+                    val totalTrackedWeight =
+                        completedWeight + pendingWeight
+
+                    val status =
+                        when {
+                            completedWeight >= unit.passMark ->
+                                "Passing"
+
+                            totalTrackedWeight < unit.passMark ->
+                                "At Risk"
+
+                            else ->
+                                "Need ${(unit.passMark - completedWeight).coerceAtLeast(0)}% more"
+                        }
+
+                    "${unit.unitCode} - $status\n" +
+                            "Completed: $completedWeight% · Pending: $pendingWeight%\n" +
+                            "Pass Mark: ${unit.passMark}%"
+                }
+
+        unitSummaryTextView.text =
+            "Units: ${latestUnits.size}\n\n$summary"
+    }
+
+    /**
      * Enables automatic reminders for due and upcoming tasks.
-     *
-     * Reminders are scheduled every four hours for the next seven days.
      */
     private fun enableAutomaticReminders() {
         val dueAndUpcomingTasks =
             ScheduleGenerator.sortBySmartPriority(
-                latestTasks.filter {
+                getDashboardTasks().filter {
                     ScheduleGenerator.calculateDaysRemaining(
                         it.deadline
                     ) <= 7
@@ -271,6 +411,7 @@ class DashboardFragment : Fragment() {
             } else {
                 dueAndUpcomingTasks.take(5)
                     .joinToString("\n") { task ->
+
                         val days =
                             ScheduleGenerator.calculateDaysRemaining(
                                 task.deadline
@@ -320,6 +461,7 @@ class DashboardFragment : Fragment() {
             .setPositiveButton(
                 getString(R.string.logout_button)
             ) { _, _ ->
+
                 requireActivity()
                     .getSharedPreferences(
                         "smartacademia_session",
