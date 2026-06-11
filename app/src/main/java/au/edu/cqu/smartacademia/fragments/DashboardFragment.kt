@@ -100,9 +100,6 @@ class DashboardFragment : Fragment() {
         val logoutButton =
             view.findViewById<Button>(R.id.logoutButton)
 
-        val enableAutoReminderButton =
-            view.findViewById<Button>(R.id.enableAutoReminderButton)
-
         val sharedPreferences =
             requireActivity().getSharedPreferences(
                 "smartacademia_session",
@@ -135,10 +132,6 @@ class DashboardFragment : Fragment() {
             confirmLogout()
         }
 
-        enableAutoReminderButton.setOnClickListener {
-            enableAutomaticReminders()
-        }
-
         return view
     }
 
@@ -154,6 +147,7 @@ class DashboardFragment : Fragment() {
 
                 updateDashboard()
                 updateAcademicProgress()
+                enableAutomaticReminders()
             }
     }
 
