@@ -92,11 +92,17 @@ interface TaskDao {
     @Query(
         "SELECT * FROM tasks " +
                 "WHERE userEmail = :email " +
-                "AND unitId != '' " +
+                "AND (" +
+                "unitId != '' " +
+                "OR course IN (" +
+                "SELECT unitCode FROM units WHERE userEmail = :email" +
+                ")" +
+                ")" +
                 "ORDER BY priorityScore DESC"
     )
-    fun getTasksLinkedToUnits(email: String): LiveData<List<Task>>
-
+    fun getTasksLinkedToUnits(
+        email: String
+    ): LiveData<List<Task>>
     /**
      * Deletes all tasks linked to a selected unit.
      *
